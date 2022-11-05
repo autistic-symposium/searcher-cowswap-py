@@ -45,8 +45,12 @@ class OrdersApi(object):
 
         order_instance = open_json(input_file)
 
-        self.__orders = order_instance['orders']        
-        self.__amms = order_instance['amms']
+        try:
+            self.__orders = order_instance['orders']        
+            self.__amms = order_instance['amms']
+        
+        except KeyError as e:
+            log_error(f'Could not load order instance(no amms or orders key): {e}')
 
 
     ###############################
@@ -57,15 +61,19 @@ class OrdersApi(object):
     def parse_order_for_spread_trade(order, order_num) -> dict:
         """Parse input order into a suitable format for spread strategy."""
 
-        return {
-                'allow_partial_fill': order['allow_partial_fill'],
-                'is_sell_order': order['is_sell_order'],
-                'buy_amount': to_decimal_str(order['buy_amount']),
-                'sell_amount': to_decimal_str(order['sell_amount']),
-                'buy_token': order['buy_token'],
-                'sell_token': order['sell_token'],
-                'order_num': order_num
-            }
+        try: 
+            return {
+                    'allow_partial_fill': order['allow_partial_fill'],
+                    'is_sell_order': order['is_sell_order'],
+                    'buy_amount': to_decimal_str(order['buy_amount']),
+                    'sell_amount': to_decimal_str(order['sell_amount']),
+                    'buy_token': order['buy_token'],
+                    'sell_token': order['sell_token'],
+                    'order_num': order_num
+                }
+
+        except KeyError as e:
+            log_error(f'Input order data is ill-formatted: {e}')
 
 
     ###############################
@@ -75,13 +83,19 @@ class OrdersApi(object):
     def parse_amms_for_spread_trade(self, order) -> dict:
         """Parse a list of pools into a suitable format for spread strategy."""
 
+        # Check whether input order is valid and tokens are not zero.
         try:
             buy_token = order['buy_token']
             sell_token = order['sell_token']
         except KeyError as e:
-            log_error(f'Input data is ill-formatted: {e}')
+            log_error(f'Order has no data for buy/sell token: {e}')
+            return
+
+        if buy_token == 0 or sell_token == 0:
+            log_error('Order invalid: either sell or buy token is zero.')
             return
         
+        # Parse amms in terms of number of trading legs and pools.
         trade_path = sell_token + buy_token
         this_amms = {}
 

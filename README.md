@@ -32,7 +32,8 @@
 
 #### Liquidity sources
 
-* Support for constant-product AMMs, such as Uniswap V2 (and its forks).
+* Support for constant-product AMMs, such as Uniswap V2 (and its forks). An Uniswap pool is represented by two token balances.
+
 
 
 #### Orders types

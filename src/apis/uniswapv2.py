@@ -95,6 +95,7 @@ class ConstantProductAmmApi(object):
         
 
         '''
+        #### TODO
 
         def _calculate_surplus_(exec_buy_amount, exec_sell_amount) -> Decimal:
             """
@@ -106,9 +107,11 @@ class ConstantProductAmmApi(object):
         print(surplus)
         ohter = int(_calculate_surplus_(amm_exec_buy_amount, amm_exec_sell_amount))
         print(ohter)
-
+        ####
 
         '''
+
+
 
 
         # Get some extra data on the reserve
@@ -121,7 +124,7 @@ class ConstantProductAmmApi(object):
         market_buy_price = float(self._calculate_token_price(updated_sell_token_reserve, 
                                                        updated_buy_token_reserve))
 
-        # Return order execution results
+        # Return order execution simulation results
         return({
             'amm_exec_sell_amount': amm_exec_buy_amount,
             'amm_exec_buy_amount': amm_exec_sell_amount,

@@ -129,7 +129,10 @@ class SpreadSolverApi(object):
     ###########################################
 
     def _run_one_leg_trade(self, order, amms_data) -> dict:
-        """Perform one-leg trade for an order to a list of pools."""
+        """
+            Perform one-leg trade for an order to a list of pools.
+            This can be also used as a baseline for more advanced trades.
+        """
 
         # Set trade data
         leg_label = order['sell_token'] + order['buy_token'] 
@@ -173,7 +176,87 @@ class SpreadSolverApi(object):
     ###########################################
 
     def _run_two_legs_trade(self, this_order, amms) -> dict:
-        """Perform two-legs trade for an order to a list of pools."""
+        """
+            Perform two-legs trade for an order to a list of pools,
+            for either one or multiple execution paths.
+        """
+
+        ################################################
+        #   Calculate execution rates for all paths    #
+        ################################################
+
+        #### TODO
+
+        from src.util.arithmetics import div
+        @staticmethod
+        def _calculate_exchange_rate(prior_sell_token_reserve, prior_buy_token_reserve, decimals=2):
+            """"
+                Calculate the exchange path for every pool path in the graph.
+                To find the exchange rate between two tokens that do not share an edge, 
+                we find a path between the two tokens vertices and walk along it, multiplying 
+                by each successive edge weight (exchange rate).
+                The problem of finding arbitrage can be posed as find a ccle in the graph
+                such that multiplyong all the edge weigths along that cycle results in a
+                value higher than 1.
+                In the Bellman-Ford algorithm, the minimal weight between two currency vertices
+                corresponds to the optimal exchange rate, the value that can be found exponentiating
+                the negative sum of weights along the path.
+                'a negative-weight cycle on the negative-log graph corresponds to an arbitrage 
+                opportunity'.
+                Exchange rate is represented as the equivalence of two token balances
+            """
+            # explain reverted -> large than 1
+            return round(float(div(prior_buy_token_reserve, prior_sell_token_reserve)), decimals)
+
+        # exchange rate class 
+        # https://github.com/cowprotocol/solver-template-py/blob/main/src/models/exchange_rate.py
+
+        exchange_rate_dict = {}
+
+        limit_price = round(float(div(this_order['sell_amount'], this_order['buy_amount'])), 2)
+        print(limit_price)
+
+        exchange_rate_dict['order_limit_price'] = limit_price
+
+        for pool_name, pool_data in amms.items():
+            prior_sell_token_reserve_leg1 = pool_data['first_leg']['sell_reserve']
+            prior_buy_token_reserve_leg1 = pool_data['first_leg']['buy_reserve']
+            exchange_rate_leg1 = _calculate_exchange_rate(prior_sell_token_reserve_leg1, prior_buy_token_reserve_leg1)
+
+            prior_sell_token_reserve_leg2 = pool_data['second_leg']['sell_reserve']
+            prior_buy_token_reserve_leg2 = pool_data['second_leg']['buy_reserve']
+            exchange_rate_leg2 = _calculate_exchange_rate(prior_sell_token_reserve_leg2, prior_buy_token_reserve_leg2)
+
+            total_exchange_rate = exchange_rate_leg1 * exchange_rate_leg2 
+
+            if total_exchange_rate < limit_price:
+                valid = False
+            else:
+                valid = True
+
+
+            exchange_rate_dict[pool_name] = {
+                    'exchange_rate_leg1': exchange_rate_leg1,
+                    'exchange_rate_leg2': exchange_rate_leg2, 
+                    'total_exchange_rate': total_exchange_rate,
+                    'valid': valid
+            }
+        
+
+        from src.util.strings import pprint
+
+
+
+        pprint(exchange_rate_dict)
+        import sys
+        sys.exit()
+
+        #### TODO
+
+
+        ################################################
+        #       Simulate best trade paths              #
+        ################################################
 
         this_amms = {}
         is_sell_order = bool(this_order['is_sell_order'])
@@ -227,7 +310,8 @@ class SpreadSolverApi(object):
                         'buy_token': first_leg_data['sell_token'],
                         'exec_sell_amount': to_solution(solution_first_leg['amm_exec_buy_amount']),
                         'exec_buy_amount': to_solution(solution_first_leg['amm_exec_sell_amount']),
-                        'surplus': to_solution(solution_first_leg['surplus'])
+                        'surplus': to_solution(solution_first_leg['surplus']),
+                        'exchange_rate': solution_first_leg['exchange_rate']
                     }})
 
             ########################
@@ -281,11 +365,25 @@ class SpreadSolverApi(object):
                         'buy_token': second_leg_data['sell_token'],
                         'exec_sell_amount': to_solution(solution_second_leg['amm_exec_buy_amount']),
                         'exec_buy_amount': to_solution(solution_second_leg['amm_exec_sell_amount']),
-                        'surplus': to_solution(solution_second_leg['surplus'])
+                        'surplus': to_solution(solution_second_leg['surplus']),
+                        'exchange_rate': solution_second_leg['exchange_rate'],
+                        'total_exchange_rate': solution_second_leg['exchange_rate'] * solution_first_leg['exchange_rate']
                     }
                 })
         
+
+        from src.util.strings import pprint
+        pprint(this_amms)
+
+        for trade, data in this_amms.items():
+            print(trade, data['exchange_rate'])
+            if 'total_exchange_rate' in data.keys():
+                print(f"    {data['total_exchange_rate']}")
+        import sys
+        sys.exit()
+
         '''
+        # TODO
         ab1 = this_amms['AB1']['surplus']
         b1c = this_amms['B1C']['surplus']
         print('ab1 ', ab1)
@@ -305,7 +403,7 @@ class SpreadSolverApi(object):
         print(to_solution(int(ab1)+int(b1c)))
         print()
         from src.util.strings import pprint
-        #pprint(this_amms)
+        pprint(this_amms)
         import sys
         sys.exit()
         '''
