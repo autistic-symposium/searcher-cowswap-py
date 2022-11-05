@@ -38,8 +38,9 @@
 #### Orders types
 
 
-* Support for limit orders.
-* Support for multiple orders in a user order instance.
+* Support for single order instances (limit price orders).
+* Support for multiple orders on a single token pairs instance.
+* Supposrt for multiple orders on multiple token pairs instances.
 
 
 
@@ -364,10 +365,13 @@ INFO:root:✅ Orders for orders/instance_1.json
 ## Features to be added
 
 * Implement AMM fees.
+* Add balancer weighted pools.
+* Add stable pools.
 * Implement other sources of liquidity.
 * Finish implementing and test end-to-end buy limit orders.
 * Add support for 3 or more legs.
 * Add unit tests.
+
 
 
 <br>
