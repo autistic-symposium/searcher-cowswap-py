@@ -1,0 +1,58 @@
+{
+    "amms": {
+        "AB1": {
+            "sell_token": "B1",
+            "buy_token": "A",
+            "exec_sell_amount": "1818_181818181818181818",
+            "exec_buy_amount": "1000_000000000000000000",
+            "surplus": "918_181818181818181818"
+        },
+        "B1C": {
+            "sell_token": "C",
+            "buy_token": "B1",
+            "exec_sell_amount": "1098_901098901098901099",
+            "exec_buy_amount": "1818_181818181818181818",
+            "surplus": "98_901098901098901099"
+        },
+        "AB2": {
+            "sell_token": "B2",
+            "buy_token": "A",
+            "exec_sell_amount": "476_190476190476190476",
+            "exec_buy_amount": "1000_000000000000000000",
+            "surplus": "-423_809523809523809524"
+        },
+        "B2C": {
+            "sell_token": "C",
+            "buy_token": "B2",
+            "exec_sell_amount": "681_818181818181818181",
+            "exec_buy_amount": "476_190476190476190476",
+            "surplus": "-318_181818181818181819"
+        },
+        "AB3": {
+            "sell_token": "B3",
+            "buy_token": "A",
+            "exec_sell_amount": "923_076923076923076923",
+            "exec_buy_amount": "1000_000000000000000000",
+            "surplus": "23_076923076923076923"
+        },
+        "B3C": {
+            "sell_token": "C",
+            "buy_token": "B3",
+            "exec_sell_amount": "1267_605633802816901408",
+            "exec_buy_amount": "923_076923076923076923",
+            "surplus": "267_605633802816901408"
+        }
+    },
+    "orders": {
+        "0": {
+            "allow_partial_fill": false,
+            "is_sell_order": true,
+            "buy_amount": "900_000000000000000000",
+            "sell_amount": "1000_000000000000000000",
+            "buy_token": "C",
+            "sell_token": "A",
+            "exec_buy_amount": "3048_324914522097620688",
+            "exec_sell_amount": "1000_000000000000000000"
+        }
+    }
+}
