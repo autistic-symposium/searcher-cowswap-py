@@ -79,7 +79,7 @@ class OrdersApi(object):
             buy_token = order['buy_token']
             sell_token = order['sell_token']
         except KeyError as e:
-            log_error(f'Input data is ill-formated: {e}')
+            log_error(f'Input data is ill-formatted: {e}')
             return
         
         trade_path = sell_token + buy_token

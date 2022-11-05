@@ -60,7 +60,7 @@
 
 > A limit order is an order to buy or sell with a restriction on the maximum price to be paid or the minimum price to be received (the "limit price").
 
-This limit determines when a order can be executed:
+This limit determines when an order can be executed:
 
 ```
 limit_price = sell_amount / buy_amount >= executed_buy_amount / executed_sell_amount
@@ -68,7 +68,7 @@ limit_price = sell_amount / buy_amount >= executed_buy_amount / executed_sell_am
 
 #### Surplus
 
-For multiple execution paths (liqudity sources), we choose the best solution by maximizing the *surplus* of an order:
+For multiple execution paths (liquidity sources), we choose the best solution by maximizing the *surplus* of an order:
 
 ```
 surplus = exec_buy_amount  - exec_sell_amount / limit_price
@@ -91,7 +91,7 @@ User orders describe a trading intent.
 * `allow_partial_fill`: if `False`, only fill-or-kill orders are executed.
 * `sell_amount`: limit amount for tokens to be sold.
 * `buy_amount`: limit amount for tokens to be bought.
-* `exec_sell_amount`: how much tokens get sold after order execution.
+* `exec_sell_amount`: how many tokens get sold after order execution.
 
 <br>
 
@@ -101,9 +101,9 @@ User orders describe a trading intent.
 * `amm_exec_buy_amount`: how many tokens the amm "buys" (gets) from the user, and it's the sum of all `exec_sell_amount` amounts of each path (leg) in the order execution.
 * `amm_exec_sell_amount`: how many tokens the amm "sells" (gives) to the user, and it's the sum of all `exec_buy_amount` amounts of each path (leg) in the order execution.
 * `market_price`: the price to buy a token through the user order specs.
-* `prior_price`: the buy price of a token in the reserve prior being altered by the order.
-* `prior_sell_token_reserve`: the initial reserve amount of the "sell" token, prior being altered by the order.
-* `prior_buy_token_reserve`: the initial reserve amount of the "buy" token, prior being altered by the order.
+* `prior_price`: the buy price of a token in the reserve prior to being altered by the order.
+* `prior_sell_token_reserve`: the initial reserve amount of the "sell" token, prior to being altered by the order.
+* `prior_buy_token_reserve`: the initial reserve amount of the "buy" token, prior to being altered by the order.
 * `updated_sell_token_reserve`: the reserve amount of the "sell" token after being altered by the order.
 * `updated_buy_token_reserve`: the reserve amount of the "buy" token after being altered by the order.
 

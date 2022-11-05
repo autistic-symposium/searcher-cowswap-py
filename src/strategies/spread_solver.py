@@ -67,7 +67,7 @@ class SpreadSolverApi(object):
                                                 surplus=0, err=None) -> None:
         """
             Sanity check for token conservation for first leg trade,
-            allowing a small aditive err ~ 1/(10^18).
+            allowing a small additive err ~ 1/(10^18).
         """
         err = err or 10000 
         if int(exec_amount) - (int(amount) + surplus) > err:
@@ -79,7 +79,7 @@ class SpreadSolverApi(object):
                                              exec_buy_amount_leg2, err=None) -> None:
         """
             Sanity check for token conservation for second leg trade,
-            allowing a small aditive err ~ 1/(10^18).
+            allowing a small additive err ~ 1/(10^18).
         """
         err = err or 10000 
         if int(exec_sell_amount_leg1) - int(exec_buy_amount_leg2) > err:
@@ -90,7 +90,7 @@ class SpreadSolverApi(object):
     def _are_tokens_conserved_multiple_execution(order, amms, err=None) -> None:
         """
             Sanity check for token conservation for the entire execution trade, for 
-            trades with 2 legs or more, allowing a small aditive err ~ 1/(10^18).
+            trades with 2 legs or more, allowing a small additive err ~ 1/(10^18).
         """
         # TODO: FIX
         if len(amms) < 2:
@@ -147,7 +147,7 @@ class SpreadSolverApi(object):
         self._print_extra_info(solution)
 
         # Save results
-        # Note: amms exec amount have reverse labels wrt order (see uniswapv2.py).
+        # Note: amms exec amount has reverse labels wrt order (see uniswapv2.py).
         exec_sell_amount = solution['amm_exec_buy_amount']
         exec_buy_amount = solution['amm_exec_sell_amount']
 
@@ -220,7 +220,6 @@ class SpreadSolverApi(object):
                                 first_leg_order['buy_amount'], solution_first_leg['surplus'])
 
             # Save results
-            # Note: amms exec amount have reverse labels wrt order (see uniswapv2.py).
             this_amms.update({ 
                 first_leg_label:
                     {
@@ -243,7 +242,7 @@ class SpreadSolverApi(object):
             second_leg_order['buy_token'] = second_leg_order['buy_token']
 
             # Update data from first leg
-            # Note: amms exec amount  have reverse labels wrt order (see uniswapv2.py).
+            # Note: amms exec amount has reverse labels wrt order (see uniswapv2.py).
             second_leg_order['sell_amount'] = solution_first_leg['amm_exec_buy_amount']
             second_leg_order['buy_amount'] = solution_first_leg['amm_exec_sell_amount']
 
@@ -275,7 +274,6 @@ class SpreadSolverApi(object):
                             solution_second_leg['amm_exec_buy_amount'])
 
             # Save results
-            # Note: amms exec amount have reverse labels wrt order (see uniswapv2.py).
             this_amms.update({
                 second_leg_label: 
                     {

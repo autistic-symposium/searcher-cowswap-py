@@ -68,7 +68,7 @@ def log_debug(string) -> None:
 
 
 def open_json(filepath) -> dict:
-    """Load and parse an JSON file."""
+    """Load and parse a file."""
 
     try:
         with open(filepath, 'r', encoding='utf-8') as f:

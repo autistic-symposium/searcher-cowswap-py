@@ -79,7 +79,7 @@ class ConstantProductAmmApi(object):
             of "sell_amount" and retrieve "buy_token" at a calculated "exec_buy_amount".
             This will reflect the inverse in the amm: the reserve will receive token A 
             at the amount "amm_exec_buy_amount" (which matches the order's exec_sell_amount),
-            and lose token C at "amm_exec_sell_amount" (orders's calculated exec_buy_amount).
+            and lose token C at "amm_exec_sell_amount" (orders' calculated exec_buy_amount).
         """
         
         # Calculate order execution data
