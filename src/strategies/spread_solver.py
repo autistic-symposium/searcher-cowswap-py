@@ -229,18 +229,28 @@ class SpreadSolverApi(object):
 
             total_exchange_rate = exchange_rate_leg1 * exchange_rate_leg2 
 
+            import math
+            log12 = math.log(exchange_rate_leg1) + math.log(exchange_rate_leg2)
+
             if total_exchange_rate < limit_price:
                 valid = False
             else:
                 valid = True
 
+            print('fffff')
             exchange_rate_dict[pool_name] = {
                     'exchange_rate_leg1': exchange_rate_leg1,
                     'exchange_rate_leg2': exchange_rate_leg2, 
                     'total_exchange_rate': total_exchange_rate,
-                    'valid': valid
+                    'valid': valid,
+                    'log12': log12
             }
         
+
+        """
+            Given two nodes in a graph, s and t, the shortest path is that path which 
+            minimizes the sim of edge weights (the path with smallest coast).
+        """        
 
         # (amount_ref / amount_tk) = p_tk / p_ref * 10^(d_tk - d_ref)
 

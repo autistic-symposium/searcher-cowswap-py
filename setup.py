@@ -7,7 +7,7 @@ setup(
                     'src.apis', \
                     'src.strategies', \
                     'src.util']),
-    author="mia",
+    author="steinkirch",
     install_requires=['python-dotenv', 'requests'],
     entry_points={
         'console_scripts': ['cowsol=src.main:run']
