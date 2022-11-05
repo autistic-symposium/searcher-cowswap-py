@@ -161,7 +161,7 @@ class OrdersApi(object):
                             log_error(f'Could not extract order data for {pool}.')
                 
                     else:
-                        log_error(f'MSOL has no strategy yet for 3-legs trade or higher.')
+                        log_error(f'COWSOL has no strategy for 3-legs trade or higher (yet)')
 
             
             except KeyError as e:

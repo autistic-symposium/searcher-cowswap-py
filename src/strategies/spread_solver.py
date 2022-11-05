@@ -234,7 +234,6 @@ class SpreadSolverApi(object):
             else:
                 valid = True
 
-
             exchange_rate_dict[pool_name] = {
                     'exchange_rate_leg1': exchange_rate_leg1,
                     'exchange_rate_leg2': exchange_rate_leg2, 
@@ -242,6 +241,9 @@ class SpreadSolverApi(object):
                     'valid': valid
             }
         
+
+        # (amount_ref / amount_tk) = p_tk / p_ref * 10^(d_tk - d_ref)
+
 
         from src.util.strings import pprint
 

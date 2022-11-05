@@ -1,4 +1,4 @@
-# ✨🐮 MSOL solver 👾✨ 
+# ✨🐮 COW Arbitrage Solver 👾✨ 
 
 <br>
 
@@ -138,7 +138,7 @@ vim .env
 
 <br>
 
-#### Install msol
+#### Install cowsol
 
 ```sh
 make install
@@ -147,7 +147,7 @@ make install
 Test your installation:
 
 ```
-msol
+cowsol
 ```
 
 
@@ -161,7 +161,7 @@ msol
 #### Solving a spread trade
 
 ```
-msol -s <order file>
+cowsol -s <order file>
 ```
 <br>
 
@@ -184,7 +184,7 @@ DEBUG:root:🧐 Prior buy token reserve: 10000_000000000000000000
 DEBUG:root:🧐 Updated sell token reserve: 11000_000000000000000000
 DEBUG:root:🧐 Updated buy token reserve: 9090_909090909090909091
 
-INFO:root:✅ Results saved at solutions/solution_1_msol.json.
+INFO:root:✅ Results saved at solutions/solution_1_cowsol.json.
 ```
 
 <br>
@@ -322,7 +322,7 @@ The solution is:
 #### Listing available amms in an order instance file
 
 ```
-msol -a <order file>
+cowsol -a <order file>
 ```
 <br>
 
@@ -340,7 +340,7 @@ INFO:root:✅ AMMs available for orders/instance_1.json
 #### Listing orders in an order instance file
 
 ```
-msol -o <order file>
+cowsol -o <order file>
 ```
 
 <br>
@@ -366,6 +366,7 @@ INFO:root:✅ Orders for orders/instance_1.json
 ## Features to be added
 
 * Implement AMM fees.
+* Add cyclic arbitrage support.
 * Add balancer weighted pools.
 * Add stable pools.
 * Implement other sources of liquidity.

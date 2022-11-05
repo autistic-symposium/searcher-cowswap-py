@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="msol",
+    name="cowsol",
     version='1.0',
     packages=find_packages(include=['src', \
                     'src.apis', \
@@ -10,6 +10,6 @@ setup(
     author="mia",
     install_requires=['python-dotenv', 'requests'],
     entry_points={
-        'console_scripts': ['msol=src.main:run']
+        'console_scripts': ['cowsol=src.main:run']
     },
 )

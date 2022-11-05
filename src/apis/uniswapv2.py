@@ -31,8 +31,8 @@ class ConstantProductAmmApi(object):
 
     def _calculate_exec_sell_amount(self) -> Decimal:
         """"
-            Implement a constant-product the retrieval of tokens B from selling an amount t 
-            of tokens A in an AB pool, where a and b are the initial token reserves:
+            Implement a constant-product the retrieval of tokens B from selling an amount 
+            t of tokens A in an AB pool, where a and b are the initial token reserves:
                  δ    ≤    (b − a * b) / (a + t)    =    (b * t) / (a + t)
         """
         return div((self.buy_token_reserve * self.sell_amount), \

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 # src/main.py
-# Entry point for msol.
+# Entry point for cowsol.
 
 import argparse
 
@@ -12,16 +12,16 @@ from src.util.os import load_config, set_output, save_output, log_info
 
 def run_menu() -> argparse.ArgumentParser:
 
-    parser = argparse.ArgumentParser(description='✨🐮 MSOL 👾✨')
+    parser = argparse.ArgumentParser(description='✨🐮 COWSOL 👾✨')
     parser.add_argument('-a', dest='amms', nargs=1,
                         help="List amms data in a given order instance. \
-                        Example: msol -a <order file>")
+                        Example: cowsol -a <order file>")
     parser.add_argument('-o', dest='orders', nargs=1,
                         help="List orders data in a given order instance. \
-                        Example: msol -a <order file>")
+                        Example: cowsol -a <order file>")
     parser.add_argument('-s', dest='spread', nargs=1,
                         help="Solve input orders with a spread strategy. \
-                        Example: msol -s <order file>")
+                        Example: cowsol -s <order file>")
     return parser
 
 
