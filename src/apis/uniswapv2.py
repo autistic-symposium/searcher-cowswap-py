@@ -92,7 +92,9 @@ class ConstantProductAmmApi(object):
         # Calculate surplus for this sell order
         surplus = int(self._calculate_surplus(amm_exec_sell_amount, self.buy_amount))
 
-        #####
+        
+
+        '''
 
         def _calculate_surplus_(exec_buy_amount, exec_sell_amount) -> Decimal:
             """
@@ -106,12 +108,7 @@ class ConstantProductAmmApi(object):
         print(ohter)
 
 
-        if surplus < 0:
-
-
-
-
-        #####
+        '''
 
 
         # Get some extra data on the reserve

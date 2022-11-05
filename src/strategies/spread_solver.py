@@ -287,6 +287,7 @@ class SpreadSolverApi(object):
                     }
                 })
         
+        '''
         ab1 = this_amms['AB1']['surplus']
         b1c = this_amms['B1C']['surplus']
         print('ab1 ', ab1)
@@ -309,6 +310,7 @@ class SpreadSolverApi(object):
         #pprint(this_amms)
         import sys
         sys.exit()
+        '''
         
         return this_amms
 
