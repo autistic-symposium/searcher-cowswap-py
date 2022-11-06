@@ -169,22 +169,33 @@ cowsol -s <order file>
 Example output (logging set to `DEBUG`):
 
 ```
-INFO:root:✅ Solving orders/instance_1.json with spread strategy.
-INFO:root:✅ One-leg trade overview:
-INFO:root:✅ sell 1000_000000000000000000 of A, amm reserve: 10000_000000000000000000
-INFO:root:✅ buy 900_000000000000000000 of C, amm reserve: 10000_000000000000000000
-
-DEBUG:root:🧐 Surplus: 9_090909090909090908
-DEBUG:root:🧐 Prior price: 1.0
-DEBUG:root:🧐 Market price: 0.8264462809917356
-DEBUG:root:🧐 Exec sell amount: 1000_000000000000000000
-DEBUG:root:🧐 Exec buy amount: 909_090909090909090909
-DEBUG:root:🧐 Prior sell token reserve: 10000_000000000000000000
-DEBUG:root:🧐 Prior buy token reserve: 10000_000000000000000000
-DEBUG:root:🧐 Updated sell token reserve: 11000_000000000000000000
-DEBUG:root:🧐 Updated buy token reserve: 9090_909090909090909091
-
-INFO:root:✅ Results saved at solutions/solution_1_cowsol.json.
+✅ Solving orders/instance_2.json with spread strategy.
+✅ FIRST LEG trade overview:
+✅ ➖ sell 1000_000000000000000000 of A
+✅ ➕ buy some amount of B2
+🟨     Surplus: 918_181818181818181818
+🟨     Exchange rate: 2.0
+🟨     Exec sell amount: 1000_000000000000000000
+🟨     Exec buy amount: 1818_181818181818181818
+🟨     Prior sell reserve: 10000_000000000000000000
+🟨     Initial buy reserve: 20000_000000000000000000
+🟨     Updated sell reserve: 11000_000000000000000000
+🟨     Updated buy reserve: 18181_818181818181818180
+🟨     Can fill?: True
+✅ SECOND LEG trade overview:
+✅ ➖ sell 1818_181818181818181818 of B2
+✅ ➕ buy some amount of C
+🟨     Surplus: 81_081081081081081081
+🟨     Exchange rate: 0.6666666666666666
+🟨     Exec sell amount: 1818_181818181818181818
+🟨     Exec buy amount: 1081_081081081081081081
+🟨     Prior sell reserve: 15000_000000000000000000
+🟨     Initial buy reserve: 10000_000000000000000000
+🟨     Updated sell reserve: 16818_181818181818181820
+🟨     Updated buy reserve: 8918_918918918918918919
+🟨     Can fill?: True
+✅ Total order surplus: 999_262899262899262899
+✅ Results saved at solutions/solution_2_cowsol.json.
 ```
 
 <br>
@@ -329,7 +340,7 @@ cowsol -a <order file>
 Example output:
 
 ```
-INFO:root:✅ AMMs available for orders/instance_1.json
+✅ AMMs available for orders/instance_1.json
 
 {   'AC': {   'reserves': {   'A': '10000_000000000000000000',
                               'C': '10000_000000000000000000'}}}
@@ -348,7 +359,7 @@ cowsol -o <order file>
 Example output:
 
 ```
-INFO:root:✅ Orders for orders/instance_1.json
+✅ Orders for orders/instance_1.json
 
 {   '0': {   'allow_partial_fill': False,
              'buy_amount': '900_000000000000000000',

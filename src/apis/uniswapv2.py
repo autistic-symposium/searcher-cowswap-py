@@ -66,6 +66,11 @@ class ConstantProductAmmApi(object):
         """
         return to_decimal(exec_amount) - to_decimal(amount)
 
+    @staticmethod
+    def _calculate_exchange_rate(sell_reserve, buy_reserve):
+        """Calculate the exchange rate between a pair of tokens."""
+        return div(buy_reserve, sell_reserve)
+
 
     ###############################
     #     Public methods          #
@@ -92,47 +97,22 @@ class ConstantProductAmmApi(object):
         # Calculate surplus for this sell order
         surplus = int(self._calculate_surplus(amm_exec_sell_amount, self.buy_amount))
 
-        
-
-        '''
-        #### TODO
-
-        def _calculate_surplus_(exec_buy_amount, exec_sell_amount) -> Decimal:
-            """
-                Calculate the surplus of an executed order. This is similar to:
-            """
-            return to_decimal(exec_sell_amount) - to_decimal(exec_buy_amount) / self._calculate_limit_price()
-
-        print()
-        print(surplus)
-        ohter = int(_calculate_surplus_(amm_exec_buy_amount, amm_exec_sell_amount))
-        print(ohter)
-        ####
-
-        '''
-
-
-
-
         # Get some extra data on the reserve
         prior_sell_token_reserve = int(self.sell_token_reserve)
         prior_buy_token_reserve = int(self.buy_token_reserve)
         updated_sell_token_reserve = int(self.sell_token_reserve + amm_exec_buy_amount)
         updated_buy_token_reserve = int(self.buy_token_reserve - amm_exec_sell_amount)
-        prior_buy_price = float(self._calculate_token_price(self.sell_token_reserve, 
-                                                       self.buy_token_reserve))
-        market_buy_price = float(self._calculate_token_price(updated_sell_token_reserve, 
-                                                       updated_buy_token_reserve))
+        exchange_rate = float(self._calculate_exchange_rate(prior_sell_token_reserve, \
+                                                        prior_buy_token_reserve))
 
         # Return order execution simulation results
         return({
+            'exchange_rate': exchange_rate,
+            'surplus': surplus,
             'amm_exec_sell_amount': amm_exec_buy_amount,
             'amm_exec_buy_amount': amm_exec_sell_amount,
             'updated_sell_token_reserve': updated_sell_token_reserve,
             'updated_buy_token_reserve': updated_buy_token_reserve,
-            'prior_price': prior_buy_price,
-            'market_price': market_buy_price,
-            'surplus': surplus,
             'prior_sell_token_reserve': prior_sell_token_reserve,
             'prior_buy_token_reserve': prior_buy_token_reserve,
             'can_fill': can_fill

@@ -4,15 +4,13 @@
             "sell_token": "B2",
             "buy_token": "A",
             "exec_sell_amount": "1818_181818181818181818",
-            "exec_buy_amount": "1000_000000000000000000",
-            "surplus": "918_181818181818181818"
+            "exec_buy_amount": "1000_000000000000000000"
         },
         "B2C": {
             "sell_token": "C",
             "buy_token": "B2",
             "exec_sell_amount": "1081_081081081081081081",
-            "exec_buy_amount": "1818_181818181818181818",
-            "surplus": "81_081081081081081081"
+            "exec_buy_amount": "1818_181818181818181818"
         }
     },
     "orders": {
