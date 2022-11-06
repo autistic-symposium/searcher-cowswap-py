@@ -14,11 +14,11 @@ def to_decimal_str(value) -> str:
     return str(to_decimal(value))
 
 
-def to_wei_str(value) -> str:
+def to_wei_str(value, decimals = 18) -> str:
     """Parse an order string to wei value."""
 
     try:
-        return str(value)[:-18] + '_' + str(value)[-18:]
+        return str(value)[:-decimals] + '_' + str(value)[-decimals:]
     except ValueError as e:
         log_error(f'Cannot convert to wei: {e}')
 

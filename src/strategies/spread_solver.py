@@ -23,18 +23,18 @@ class SpreadSolverApi(object):
         """Print debug info from solution."""
         
         try:
-            log_debug(f"  Surplus: {to_solution(solution['surplus'])}")
+            log_debug(f"  Prior sell reserve: {to_solution(solution['prior_sell_token_reserve'])}")
+            log_debug(f"  Prior buy reserve: {to_solution(solution['prior_buy_token_reserve'])}")
             log_debug(f"  Prior sell price {solution['prior_sell_price']}")
-            log_debug(f"  Market sell price {solution['market_sell_price']}")
             log_debug(f"  Prior buy price {solution['prior_buy_price']}")
-            log_debug(f"  Market buy price {solution['market_buy_price']}")
             log_debug(f"  AMM exec sell amount: {to_solution(solution['amm_exec_sell_amount'])}")
             log_debug(f"  AMM exec buy amount: {to_solution(solution['amm_exec_buy_amount'])}")
-            log_debug(f"  Prior sell reserve: {to_solution(solution['prior_sell_token_reserve'])}")
-            log_debug(f"  Initial buy reserve: {to_solution(solution['prior_buy_token_reserve'])}")
             log_debug(f"  Updated sell reserve: {to_solution(solution['updated_sell_token_reserve'])}")
             log_debug(f"  Updated buy reserve: {to_solution(solution['updated_buy_token_reserve'])}")
+            log_debug(f"  Market sell price {solution['market_sell_price']}")
+            log_debug(f"  Market buy price {solution['market_buy_price']}")
             log_debug(f"  Can fill: {solution['can_fill']}")
+            log_debug(f"  Surplus: {to_solution(solution['surplus'])}")
 
         except KeyError as e:
             log_error(f'Could not print data for "{e}"')
@@ -70,7 +70,7 @@ class SpreadSolverApi(object):
     def _print_total_order_surplus(total_surplus) -> None:
         """Pretty print total surplus for 2-legs trade."""
 
-        log_info(f'Total order surplus: {to_solution(total_surplus)}')
+        log_info(f'TOTAL ORDER SURPLUS: {to_solution(total_surplus)}')
 
 
     ###########################################
@@ -244,11 +244,62 @@ class SpreadSolverApi(object):
             Apply multi-variable calculus to optimize the problem of
             multiple amms paths for a two-legs trade order.     
         """
+        from src.util.arithmetics import div
+        from src.util.strings import to_decimal
 
-        
+        order_sell_amount_cte = 1000000000000000000000 # sell A
+        order_buy_amount_cte = 900000000000000000000 # buy C
+
+        ab1_buy_reserve_cte = 10000000000000000000000 # amm buy A, order sell A
+        ab1_sell_reserve_cte = 20000000000000000000000 # amm sell B3, order buy B3
+        ab3_buy_reserve_cte = 12000000000000000000000 # amm buy A, order sell A
+        ab3_sell_reserve_cte = 12000000000000000000000 # amm sell B3, order buy B3
+        b1c_buy_reserve_cte = 23000000000000000000000 # amm buy B1, order sell B1
+        b1c_sell_reserve_cte = 15000000000000000000000 # amm sell C, order buy C
+        b3c_buy_reserve_cte = 10000000000000000000000# amm buy B3, order sell B3
+        b3c_sell_reserve_cte = 15000000000000000000000# amm sell C, order buy C
 
 
+        ab1_sell_reserve_cte = 10000000000000000000000 # amm buy A, order sell A
+        ab1_buy_reserve_cte = 20000000000000000000000 # amm sell B3, order buy B3
+        ab3_sell_reserve_cte = 12000000000000000000000 # amm buy A, order sell A
+        ab3_buy_reserve_cte = 12000000000000000000000 # amm sell B3, order buy B3
+        b1c_sell_reserve_cte = 23000000000000000000000 # amm buy B1, order sell B1
+        b1c_buy_reserve_cte = 15000000000000000000000 # amm sell C, order buy C
+        b3c_sell_reserve_cte = 10000000000000000000000# amm buy B3, order sell B3
+        b3c_buy_reserve_cte = 15000000000000000000000# amm sell C, order buy C
 
+
+        limit_price_cte = div(order_sell_amount_cte, order_buy_amount_cte) 
+
+        # a -> b
+        ab1_buy_amount = 289034099526748718745
+        ab3_buy_amount = order_sell_amount_cte - ab1_buy_amount
+
+        ab1_sell_amount = int(div(ab1_buy_reserve_cte * ab1_buy_amount, ab1_sell_reserve_cte + ab1_buy_amount))
+        ab3_sell_amount = int(div(ab3_buy_reserve_cte * ab3_buy_amount, ab3_sell_reserve_cte + ab3_buy_amount))
+
+        # b -> c
+        b1c_buy_amount = ab1_sell_amount
+        b3c_buy_amount = ab3_sell_amount
+
+        b1c_sell_amount = int(div(b1c_buy_reserve_cte * b1c_buy_amount, b1c_sell_reserve_cte + b1c_buy_amount))
+        b3c_sell_amount = int(div(b3c_buy_reserve_cte * b3c_buy_amount, b3c_sell_reserve_cte + b3c_buy_amount))
+
+        order_exec_sell_amount = order_sell_amount_cte # y
+        order_exec_buy_amount =  b1c_sell_amount + b3c_sell_amount #x
+
+        surplus_this = order_exec_buy_amount - order_buy_amount_cte
+
+        # x - y/pi
+        this_surplus = order_exec_buy_amount - int(div(order_exec_sell_amount, limit_price_cte))
+
+
+        print(to_solution(this_surplus))
+        print(to_solution(surplus_this))
+
+        import sys
+        sys.exit()
 
 
         from src.util.strings import pprint
