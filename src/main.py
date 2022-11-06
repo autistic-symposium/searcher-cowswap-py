@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 # src/main.py
-# Entry point for msol.
+# Entry point for cowsol.
 
 import argparse
 
@@ -12,16 +12,16 @@ from src.util.os import load_config, set_output, save_output, log_info
 
 def run_menu() -> argparse.ArgumentParser:
 
-    parser = argparse.ArgumentParser(description='✨🐮 MSOL 👾✨')
+    parser = argparse.ArgumentParser(description='✨🐮 COWSOL 👾✨')
     parser.add_argument('-a', dest='amms', nargs=1,
                         help="List amms data in a given order instance. \
-                        Example: msol -a <order file>")
+                        Example: cowsol -a <order file>")
     parser.add_argument('-o', dest='orders', nargs=1,
                         help="List orders data in a given order instance. \
-                        Example: msol -a <order file>")
+                        Example: cowsol -a <order file>")
     parser.add_argument('-s', dest='spread', nargs=1,
                         help="Solve input orders with a spread strategy. \
-                        Example: msol -s <order file>")
+                        Example: cowsol -s <order file>")
     return parser
 
 
@@ -51,10 +51,9 @@ def run() -> None:
     elif args.spread:
 
         input_file = args.spread[0]
-        output_destination = set_output(env_vars, input_file)
         log_info(f'Solving {input_file} with spread strategy.')
 
-        # Create an instance for the entire input file
+        # Create an instance for the entire instance input file.
         oa = OrdersApi(input_file)
         
         result = {
@@ -67,13 +66,19 @@ def run() -> None:
             order = oa.parse_order_for_spread_trade(order, order_num)
             amms = oa.parse_amms_for_spread_trade(order)
 
-            # Create an instance for each order
+            # Skip if the input order is invalid.
+            if not order or not amms:
+                continue
+
+            # Create a solver instance for each order.
             solver = SpreadSolverApi(amms)
             solution = solver.solve(order)
 
+            # Update results for orders instance.
             result['amms'].update(solution['amms']) 
             result['orders'].update(solution['orders']) 
 
+        output_destination = set_output(env_vars, input_file)   
         save_output(output_destination, result)
         log_info(f'Results saved at {output_destination}.')
     

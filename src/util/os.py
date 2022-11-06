@@ -15,16 +15,17 @@ def set_logging(log_level) -> None:
     """Set logging level according to .env config."""
 
     if log_level == 'info':
-        logging.basicConfig(level=logging.INFO)
+        logging.basicConfig(level=logging.INFO, format='%(message)s')
 
     elif log_level == 'error':
-        logging.basicConfig(level=logging.ERROR)
+        logging.basicConfig(level=logging.ERROR, format='%(message)s')
 
     elif log_level == 'debug':
-        logging.basicConfig(level=logging.DEBUG)
+        logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 
     else:
         print(f'Logging level {log_level} is not available.')
+
 
 
 def load_config() -> dict:
@@ -64,7 +65,7 @@ def log_info(string) -> None:
 
 def log_debug(string) -> None:
     """Print STDOUT debug using the logging library."""
-    logging.debug(f'🧐 {string}')
+    logging.debug(f'🟨 {string}')
 
 
 def open_json(filepath) -> dict:

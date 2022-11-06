@@ -8,17 +8,6 @@ from src.util.os import log_error
 from src.util.arithmetics import to_decimal
 
 
-
-def to_percentage(value) -> str:
-    """Format a percentage float to a suitable string."""
-    return "%.8f%%" % (100 * value)
-
-
-def remove_e(value) -> str:
-    """Remove scientific notation from decimal."""
-    return "{:.18f}".format(value)
-
-
 def to_decimal_str(value) -> str:
     """Format a reserve amount to a suitable string."""
     return str(to_decimal(value))

@@ -31,8 +31,8 @@ class ConstantProductAmmApi(object):
 
     def _calculate_exec_sell_amount(self) -> Decimal:
         """"
-            Implement a constant-product the retrieval of tokens B from selling an amount t 
-            of tokens A in an AB pool, where a and b are the initial token reserves:
+            Implement a constant-product the retrieval of tokens B from selling an amount 
+            t of tokens A in an AB pool, where a and b are the initial token reserves:
                  δ    ≤    (b − a * b) / (a + t)    =    (b * t) / (a + t)
         """
         return div((self.buy_token_reserve * self.sell_amount), \
@@ -66,6 +66,11 @@ class ConstantProductAmmApi(object):
         """
         return to_decimal(exec_amount) - to_decimal(amount)
 
+    @staticmethod
+    def _calculate_exchange_rate(sell_reserve, buy_reserve):
+        """Calculate the exchange rate between a pair of tokens."""
+        return div(buy_reserve, sell_reserve)
+
 
     ###############################
     #     Public methods          #
@@ -75,11 +80,11 @@ class ConstantProductAmmApi(object):
         """
             Get sell limit order data for a list of reserves.
 
-            In this trade, the order will add "sell_token" to the reserve at the value
+            In this trade, the order would add "sell_token" to the reserve at the value
             of "sell_amount" and retrieve "buy_token" at a calculated "exec_buy_amount".
-            This will reflect the inverse in the amm: the reserve will receive token A 
+            This would have the inverse trade in the amm: the reserve would receive token A 
             at the amount "amm_exec_buy_amount" (which matches the order's exec_sell_amount),
-            and lose token C at "amm_exec_sell_amount" (orders' calculated exec_buy_amount).
+            and would lose token C at "amm_exec_sell_amount" (orders' exec_buy_amount).
         """
         
         # Calculate order execution data
@@ -92,44 +97,22 @@ class ConstantProductAmmApi(object):
         # Calculate surplus for this sell order
         surplus = int(self._calculate_surplus(amm_exec_sell_amount, self.buy_amount))
 
-        
-
-        '''
-
-        def _calculate_surplus_(exec_buy_amount, exec_sell_amount) -> Decimal:
-            """
-                Calculate the surplus of an executed order. This is similar to:
-            """
-            return to_decimal(exec_sell_amount) - to_decimal(exec_buy_amount) / self._calculate_limit_price()
-
-        print()
-        print(surplus)
-        ohter = int(_calculate_surplus_(amm_exec_buy_amount, amm_exec_sell_amount))
-        print(ohter)
-
-
-        '''
-
-
         # Get some extra data on the reserve
         prior_sell_token_reserve = int(self.sell_token_reserve)
         prior_buy_token_reserve = int(self.buy_token_reserve)
         updated_sell_token_reserve = int(self.sell_token_reserve + amm_exec_buy_amount)
         updated_buy_token_reserve = int(self.buy_token_reserve - amm_exec_sell_amount)
-        prior_buy_price = float(self._calculate_token_price(self.sell_token_reserve, 
-                                                       self.buy_token_reserve))
-        market_buy_price = float(self._calculate_token_price(updated_sell_token_reserve, 
-                                                       updated_buy_token_reserve))
+        exchange_rate = float(self._calculate_exchange_rate(prior_sell_token_reserve, \
+                                                        prior_buy_token_reserve))
 
-        # Return order execution results
+        # Return order execution simulation results
         return({
+            'exchange_rate': exchange_rate,
+            'surplus': surplus,
             'amm_exec_sell_amount': amm_exec_buy_amount,
             'amm_exec_buy_amount': amm_exec_sell_amount,
             'updated_sell_token_reserve': updated_sell_token_reserve,
             'updated_buy_token_reserve': updated_buy_token_reserve,
-            'prior_price': prior_buy_price,
-            'market_price': market_buy_price,
-            'surplus': surplus,
             'prior_sell_token_reserve': prior_sell_token_reserve,
             'prior_buy_token_reserve': prior_buy_token_reserve,
             'can_fill': can_fill
