@@ -19,9 +19,12 @@
 
 #### Spread trades
 
-* One-leg limit price arbitrage trade.
-* Two-legs limit price arbitrage trade for multiple execution paths.
-
+* One-leg limit price trade.
+    - In this type of order (`orders/instance_1.json`), we have a limit price and one reserve (A->C), so it's a straightforward solution.
+* Two-legs limit price trade for a single execution paths.
+    - In this type of order (`orders/instance_2.json`), we have a two-legs trade (A->B->C) but with only one option for each leg, so we simply walk the legs without the need for optimization.
+* Two-legs limit price trade for multiple execution paths.
+    - In this type of order (`orders/instance_3.json`), we have a two-legs trade (A->B->C) but with multiple pool options for each leg (B1, B2, B3, etc), so we complete the order by dividing the order through multiple paths to optimize for total surplus.
 <br>
 
 
@@ -32,16 +35,16 @@
 
 #### Liquidity sources
 
-* Support for constant-product AMMs, such as Uniswap V2 (and its forks). An Uniswap pool is represented by two token balances.
+* Support for constant-product AMMs, such as Uniswap V2 (and its forks), where pools are represented by two token balances.
 
 
 
 #### Orders types
 
 
-* Support for single order instances (limit price orders).
-* Support for multiple orders on a single token pairs instance.
-* Support for multiple orders on multiple token pairs instances.
+* Support for limit price orders for single order instances.
+* Support for limit price orders for multiple orders on a single token pairs instance.
+* Support for limit price orders for multiple orders on multiple token pairs instances.
 
 
 
@@ -376,17 +379,28 @@ Example output:
 
 ## Features to be added
 
-* Add support for concurrency (`async`).
-* Implement support for AMM fees.
-* Add cyclic arbitrage detection.
-* Add balancer weighted pools.
-* Add stable pools.
-* Implement other sources of liquidity.
-* Finish implementing and test end-to-end **buy** limit orders.
-* Add support for 3 or more legs.
+### Strategies
+
+* Add multiple path graph weighting and cyclic arbitrage detection using the Bellman-Ford algorithm, so that we can optimize by multiple paths without necessarily dividing the order through them. This would allow obtaining arbitrage profit through finding profitable negative cycles (e.g., A->B->C->D->A).
+* Add support for more than two legs.
+
+<br>
+
+### Liquidity sources
+
+* Add support for Balancer's weighted pools.
+* Add support for Uniswap v3 and forks.
+* Add support for stable pools.
+
+<br>
+
+### Code improvement
+
+* Add support for concurrency (`async`), so tasks could run in parallel adding temporal advantage to the solver.
+* Implement support for AMM fees when calculating surplus.
+* Add an actual execution class (through CoW server or directly to the blockchains).
+* Finish implementing end-to-end **buy** limit orders.
 * Add unit tests.
-
-
 
 <br>
 

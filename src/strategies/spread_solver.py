@@ -15,7 +15,7 @@ class SpreadSolverApi(object):
         self.__amms = amms
 
     ###########################################
-    #     Private methods: Pretty print       #
+    #     Private methods: Pretty prints      #
     ###########################################
 
     @staticmethod
@@ -28,8 +28,8 @@ class SpreadSolverApi(object):
             log_debug(f"  Market sell price {solution['market_sell_price']}")
             log_debug(f"  Prior buy price {solution['prior_buy_price']}")
             log_debug(f"  Market buy price {solution['market_buy_price']}")
-            log_debug(f"  Exec sell amount: {to_solution(solution['amm_exec_sell_amount'])}")
-            log_debug(f"  Exec buy amount: {to_solution(solution['amm_exec_buy_amount'])}")
+            log_debug(f"  AMM exec sell amount: {to_solution(solution['amm_exec_sell_amount'])}")
+            log_debug(f"  AMM exec buy amount: {to_solution(solution['amm_exec_buy_amount'])}")
             log_debug(f"  Prior sell reserve: {to_solution(solution['prior_sell_token_reserve'])}")
             log_debug(f"  Initial buy reserve: {to_solution(solution['prior_buy_token_reserve'])}")
             log_debug(f"  Updated sell reserve: {to_solution(solution['updated_sell_token_reserve'])}")
@@ -223,7 +223,6 @@ class SpreadSolverApi(object):
             self._print_total_order_surplus(total_surplus)
 
             # Save results
-
             solution_first_leg['amm_buy_token'] = first_leg_data['buy_token']
             solution_first_leg['amm_sell_token'] = first_leg_data['sell_token']
             first_leg_label = solution_first_leg['amm_sell_token'] + solution_first_leg['amm_buy_token'] 
@@ -241,8 +240,17 @@ class SpreadSolverApi(object):
         return this_amms
 
     def _calculate_best_muultiple_paths(self, simulated_amms) -> dict:
-        """fff"""
+        """
+            Apply multi-variable calculus to optimize the problem of
+            multiple amms paths for a two-legs trade order.     
+        """
+
         
+
+
+
+
+
         from src.util.strings import pprint
 
         from src.util.arithmetics import div, to_decimal
