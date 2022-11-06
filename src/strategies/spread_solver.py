@@ -240,7 +240,7 @@ class SpreadSolverApi(object):
 
         return this_amms
 
-    def _calculate_best_trade_path(self, simulated_amms) -> dict:
+    def _calculate_best_muultiple_paths(self, simulated_amms) -> dict:
         """fff"""
         
         from src.util.strings import pprint
@@ -335,9 +335,9 @@ class SpreadSolverApi(object):
 
         # If this two-legs trade has multiple paths, optimize for them.
         if len(simulated_amms) > 2:
-            simulated_amms = self._calculate_best_trade_path(simulated_amms)
+            simulated_amms = self._calculate_best_muultiple_paths(simulated_amms)
 
-        # Save the amms solution to a suitable format.
+        # Save the final amms solution to a suitable format.
         for amm_name, amm_data in simulated_amms.items():
             solution.update(
                 {amm_name:
