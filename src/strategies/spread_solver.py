@@ -13,6 +13,7 @@ class SpreadSolverApi(object):
     def __init__(self, amms):
 
         self.__amms = amms
+        self.__supplus_ranking = {}
 
     ###########################################
     #     Private methods: Pretty prints      #
@@ -109,8 +110,8 @@ class SpreadSolverApi(object):
 
     def _run_one_leg_trade(self, order, amms_data) -> dict:
         """
-            Perform one-leg trade for an order to a list of pools.
-            This can be also used as a baseline for more advanced trades.
+            Perform one-leg trade for an order to a list of pools, 
+            i.e., A -> C. Can be a baseline for advanced trades.
         """
 
         # Set trade data
@@ -150,16 +151,20 @@ class SpreadSolverApi(object):
     #     Private methods: Two-legs strategy  #
     ###########################################
 
-    def _run_two_legs_simulation(self, this_order, amms) -> dict:
-        """Perform a multi-path simulation for a two-legs trade."""
+    def _run_two_leg_trade(self, this_order, amms, simulation=False) -> dict:
+        """
+            Perform a multi-path simulation for a two-legs trade,
+            i.e. A -> C through A -> Ti -> C, where i E [1, 2+].
+        """
         
         this_amms = {}
+        self.__supplus_ranking[this_order['order_num']] = {}
 
         ##############################################
         #       Simulate best trade paths            #
         ##############################################
 
-        for amms_data in amms.values():
+        for amm_token, amm_data in amms.items():
       
             ##################################
             #     Run first leg simulation   #
@@ -167,23 +172,24 @@ class SpreadSolverApi(object):
 
             # Set trade data
             first_leg_order = deep_copy(this_order)
-            first_leg_data = amms_data['first_leg']
-
-            # Log trade input info
-            self._print_initial_info_two_legs('FIRST LEG', first_leg_order, first_leg_data)
+            first_leg_data = amm_data['first_leg']
 
             # Perform trade simulation
             first_leg_trade = ConstantProductAmmApi(first_leg_order, first_leg_data)
             solution_first_leg = first_leg_trade.solve()
+            
+            if not simulation:
+                # Log trade input info
+                self._print_initial_info_two_legs('FIRST LEG', first_leg_order, first_leg_data)
 
-            # Sanity check for token conservation
-            self._are_tokens_conserved_first_leg(solution_first_leg['amm_exec_sell_amount'], 
-                                first_leg_order['sell_amount'])
-            self._are_tokens_conserved_first_leg(solution_first_leg['amm_exec_buy_amount'], 
-                                first_leg_order['buy_amount'], solution_first_leg['surplus'])
+                # Sanity check for token conservation
+                self._are_tokens_conserved_first_leg(solution_first_leg['amm_exec_sell_amount'], 
+                                    first_leg_order['sell_amount'])
+                self._are_tokens_conserved_first_leg(solution_first_leg['amm_exec_buy_amount'], 
+                                    first_leg_order['buy_amount'], solution_first_leg['surplus'])
 
-            # Log trade output info
-            self._print_extra_info(solution_first_leg)
+                # Log trade output info
+                self._print_extra_info(solution_first_leg)
 
             ##################################
             #    Run second leg simulation   #
@@ -191,36 +197,39 @@ class SpreadSolverApi(object):
     
             # Set trade data
             second_leg_order = deep_copy(this_order)
-            second_leg_data = amms_data['second_leg']
+            second_leg_data = amm_data['second_leg']
 
             # Update data from first leg
             second_leg_order['sell_amount'] = solution_first_leg['amm_exec_buy_amount']
             second_leg_order['buy_amount'] = solution_first_leg['amm_exec_sell_amount']
 
-            # Log trade input info
-            self._print_initial_info_two_legs('SECOND LEG', second_leg_order, second_leg_data)
-
             # Perform trade simulation
             second_leg_trade = ConstantProductAmmApi(second_leg_order, second_leg_data)
             solution_second_leg = second_leg_trade.solve()
 
-            # Sanity check for token conservation
-            self._are_tokens_conserved_first_leg(solution_second_leg['amm_exec_sell_amount'], 
-                            second_leg_order['sell_amount'])
-            self._are_tokens_conserved_first_leg(solution_second_leg['amm_exec_buy_amount'], 
-                            second_leg_order['buy_amount'], solution_second_leg['surplus'])
-            self._are_tokens_conserved_second_leg(solution_first_leg['amm_exec_sell_amount'], 
-                            solution_second_leg['amm_exec_buy_amount'])
+            if not simulation:
+                # Log trade input info
+                self._print_initial_info_two_legs('SECOND LEG', second_leg_order, second_leg_data)
+
+                # Sanity check for token conservation
+                self._are_tokens_conserved_first_leg(solution_second_leg['amm_exec_sell_amount'], 
+                                second_leg_order['sell_amount'])
+                self._are_tokens_conserved_first_leg(solution_second_leg['amm_exec_buy_amount'], 
+                                second_leg_order['buy_amount'], solution_second_leg['surplus'])
+                self._are_tokens_conserved_second_leg(solution_first_leg['amm_exec_sell_amount'], 
+                                solution_second_leg['amm_exec_buy_amount'])
 
 
             # calculate surplus (if it's negative, trade is not fillable so skip)
             total_surplus = solution_first_leg['surplus'] + solution_second_leg['surplus']
+            self.__supplus_ranking[this_order['order_num']][amm_token] = total_surplus
             if total_surplus < 0:
                 continue
 
-            # Print results
-            self._print_extra_info(solution_second_leg)
-            self._print_total_order_surplus(total_surplus)
+            if not simulation:
+                # Print results
+                self._print_extra_info(solution_second_leg)
+                self._print_total_order_surplus(total_surplus)
 
             # Save results
             solution_first_leg['amm_buy_token'] = first_leg_data['buy_token']
@@ -239,12 +248,14 @@ class SpreadSolverApi(object):
 
         return this_amms
 
-    def _calculate_best_muultiple_paths(self, simulated_amms) -> dict:
+    def _optimize_for_2_legs_2_pools(self, amm1, amm2, this_order) -> dict:
+        """ Optimize for two pool paths for a two-legs trade order,
+            i.e., A -> C through A -> T1 -> C AND A -> T2 -> C.
         """
-            Apply multi-variable calculus to optimize the problem 
-            of multiple amms paths for a two-legs trade order.     
-        """
+    
+
         order_sell_amount_cte = 1000000000000000000000 # sell A
+        
         order_buy_amount_cte = 900000000000000000000 # buy C
 
         ab1_sell_reserve_cte = 10000000000000000000000 # order sell A
@@ -264,7 +275,7 @@ class SpreadSolverApi(object):
         ab1_buy_amount_min = 0
         
         def surplus_equation(ab1_buy_amount):
-            return (b1c_buy_reserve_cte * (ab1_buy_reserve_cte * ab1_buy_amount) / \
+            return (ab1_buy_reserve_cte * (ab1_buy_reserve_cte * ab1_buy_amount) / \
                     (ab1_sell_reserve_cte + ab1_buy_amount)) / (b1c_sell_reserve_cte + \
                     (ab1_buy_reserve_cte * ab1_buy_amount) / (ab1_sell_reserve_cte + ab1_buy_amount)) + \
                     (b3c_buy_reserve_cte * (ab3_buy_reserve_cte * (order_sell_amount_cte - ab1_buy_amount)) / \
@@ -274,14 +285,13 @@ class SpreadSolverApi(object):
                     order_sell_amount_cte / limit_price_cte
 
         print(surplus_equation(ab1_buy_amount))
+        from src.util.arithmetics import nelder_mead_simplex_optimization
+
+        boundary = (ab1_buy_amount_min, ab1_buy_amount_max)
+        solution = nelder_mead_simplex_optimization(surplus_equation, boundary)
         
-        
-        import scipy
 
-
-        ab1_buy_amount = scipy.optimize.fmin(lambda x: -surplus_equation(x), x0 = order_sell_amount_cte/2)
-
-        print(ab1_buy_amount)
+        print(solution)
 
         import sys
         sys.exit()
@@ -295,14 +305,31 @@ class SpreadSolverApi(object):
         """
 
         solution = {}
-        simulated_amms = self._run_two_legs_simulation(this_order, amms)
 
-        # If this two-legs trade has multiple paths, optimize for them.
-        if len(simulated_amms) > 2:
-            simulated_amms = self._calculate_best_muultiple_paths(simulated_amms)
+        if len(amms) == 1:
+            this_amms = self._run_two_leg_trade(this_order, amms, simulation=False)
+        
+        elif len(amms) > 1:
+            # Solve for two-legs trade with multiple execution pools.
+            log_debug('Using the best two execution simulations by surplus yield.')            
+            _ = self._run_two_leg_trade(this_order, amms, simulation=True)
+
+            suplus_rank = self.__supplus_ranking[this_order['order_num']]
+            sorted_ = [k for k, v in sorted(suplus_rank.items(), key=lambda item: item[1], reverse=True)]
+
+            # TODO SELL ORDERS VS BUY ORDERS
+            midtoken1 = sorted_[0]
+            midtoken2 = sorted_[1]
+            key1 = this_order['sell_token'] + midtoken1
+            key2 = midtoken1 + this_order['buy_token'] 
+            key3 = this_order['sell_token'] + midtoken2
+            key4 = midtoken2 + this_order['buy_token'] 
+    
+
+            this_amms = self._optimize_for_2_legs_2_pools(amms[midtoken1], amms[midtoken2], this_order)
 
         # Save the final amms solution to a suitable format.
-        for amm_name, amm_data in simulated_amms.items():
+        for amm_name, amm_data in this_amms.items():
             solution.update(
                 {amm_name:
                     {
