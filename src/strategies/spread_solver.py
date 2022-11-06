@@ -14,7 +14,6 @@ class SpreadSolverApi(object):
 
         self.__amms = amms
 
-
     ###########################################
     #     Private methods: Pretty print       #
     ###########################################
@@ -70,6 +69,7 @@ class SpreadSolverApi(object):
     @staticmethod
     def _print_total_order_surplus(total_surplus) -> None:
         """Pretty print total surplus for 2-legs trade."""
+
         log_info(f'Total order surplus: {to_solution(total_surplus)}')
 
 
@@ -84,6 +84,7 @@ class SpreadSolverApi(object):
             Sanity check for token conservation for first leg trade,
             allowing a small additive err ~ 1/(10^18).
         """
+        
         err = err or 10000 
         if int(exec_amount) - (int(amount) + surplus) > err:
             log_error('This message should never appear as it indicates that tokens ' + \
@@ -96,6 +97,7 @@ class SpreadSolverApi(object):
             Sanity check for token conservation for second leg trade,
             allowing a small additive err ~ 1/(10^18).
         """
+        
         err = err or 10000 
         if int(exec_sell_amount_leg1) - int(exec_buy_amount_leg2) > err:
             log_error('This message should never appear as it indicates that tokens ' + \
@@ -248,6 +250,7 @@ class SpreadSolverApi(object):
 
     def _calculate_best_trade_path(self, simulated_amms) -> dict:
         """fff"""
+        
         from src.util.strings import pprint
 
         from src.util.arithmetics import div, to_decimal

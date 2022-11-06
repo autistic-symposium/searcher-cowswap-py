@@ -27,6 +27,7 @@ class ConstantProductAmmApi(object):
 
     def _calculate_limit_price(self) -> Decimal:
         """Calculate the limit price of a given order."""
+        
         return div(self.sell_amount, self.buy_amount)
 
     def _calculate_exec_sell_amount(self) -> Decimal:
@@ -35,6 +36,7 @@ class ConstantProductAmmApi(object):
             t of tokens A in an AB pool, where a and b are the initial token reserves:
                  δ    ≤    (b − a * b) / (a + t)    =    (b * t) / (a + t)
         """
+        
         return div((self.buy_token_reserve * self.sell_amount), \
                                     (self.sell_token_reserve + self.sell_amount))
     
@@ -43,6 +45,7 @@ class ConstantProductAmmApi(object):
 
     def _can_fill_order(self, exec_amount, limit_amount) -> bool:
         """Verify whether the order checks the limit price constraint."""
+        
         if self.allow_partial_fill:
             return exec_amount <= limit_amount
         else:
@@ -56,6 +59,7 @@ class ConstantProductAmmApi(object):
     @staticmethod
     def _calculate_token_price(token_balance, pair_token_balance) -> Decimal:
         """Return the current (market) price for a token in the pool."""
+        
         return div(pair_token_balance, token_balance)
    
     @staticmethod
@@ -64,11 +68,13 @@ class ConstantProductAmmApi(object):
             Calculate the surplus of an executed order. This is similar to:
             exec_buy_amount - exec_sell_amount / limit_price
         """
+        
         return to_decimal(exec_amount) - to_decimal(amount)
 
     @staticmethod
     def _calculate_exchange_rate(sell_reserve, buy_reserve) -> Decimal:
         """Calculate the exchange rate between a pair of tokens."""
+
         return div(buy_reserve, sell_reserve)
 
 
@@ -102,6 +108,8 @@ class ConstantProductAmmApi(object):
         prior_buy_token_reserve = int(self.buy_token_reserve)
         updated_sell_token_reserve = int(self.sell_token_reserve + amm_exec_buy_amount)
         updated_buy_token_reserve = int(self.buy_token_reserve - amm_exec_sell_amount)
+
+        # Get some extra data on the prices
         prior_buy_price = float(self._calculate_exchange_rate( \
                                     prior_sell_token_reserve, prior_buy_token_reserve))
         market_buy_price = float(self._calculate_token_price( \
@@ -111,7 +119,6 @@ class ConstantProductAmmApi(object):
         market_sell_price = float(self._calculate_token_price( \
                                     updated_buy_token_reserve, updated_sell_token_reserve))
 
-        # Return order execution simulation results
         return({
             'surplus': surplus,
             'prior_buy_price': prior_buy_price,
@@ -129,11 +136,11 @@ class ConstantProductAmmApi(object):
         })
 
     def trade_buy_order(self) -> dict:
-        """Get buy limit order data for a list of reserves."""
         raise NotImplementedError
 
     def solve(self) -> dict:
         """Entry point for this class."""
+        
         if self.is_sell_order:
             return self.trade_sell_order()
         else:

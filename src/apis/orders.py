@@ -6,6 +6,7 @@
 from src.util.os import open_json, log_error
 from src.util.strings import to_decimal_str, pprint
 
+
 class OrdersApi(object):
 
     def __init__(self, input_file):
@@ -23,16 +24,19 @@ class OrdersApi(object):
     @property
     def orders(self) -> dict:
         """Access to full order data."""
+        
         return self.__orders
 
     @property
     def orders_data(self) -> dict:
         """Pretty print full orders data."""
+        
         return pprint(self.__orders)
 
     @property
     def amms_data(self) -> dict:
         """Pretty print full amms data."""
+        
         return pprint(self.__amms)
 
 
