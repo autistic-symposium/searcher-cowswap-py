@@ -19,9 +19,12 @@
 
 #### Spread trades
 
-* One-leg limit price arbitrage trade.
-* Two-legs limit price arbitrage trade for multiple execution paths.
-
+* One-leg limit price trade.
+    - In this type of order (`orders/instance_1.json`), we have a limit price and one reserve (`A -> C`), so it's a straightforward solution.
+* Two-legs limit price trade for a single execution paths.
+    - In this type of order (`orders/instance_2.json`), we have a two-legs trade (`A -> B -> C`) but with only one option for each leg, so we simply walk the legs without the need for optimization.
+* Two-legs limit price trade for multiple execution paths.
+    - In this type of order (`orders/instance_3.json`), we have a two-legs trade (`A -> B -> C`) but with multiple pool options for each leg (`B1`, `B2`, `B3`, etc), so we complete the order by dividing the order through multiple paths to optimize for total surplus.
 <br>
 
 
@@ -32,32 +35,24 @@
 
 #### Liquidity sources
 
-* Support for constant-product AMMs, such as Uniswap V2 (and its forks). An Uniswap pool is represented by two token balances.
-
+* Support for constant-product AMMs, such as Uniswap v2 (and its forks), where pools are represented by two token balances.
 
 
 #### Orders types
 
 
-* Support for single order instances (limit price orders).
-* Support for multiple orders on a single token pairs instance.
-* Support for multiple orders on multiple token pairs instances.
-
-
+* Support for limit price orders for single order instances.
+* Support for limit price orders for multiple orders on a single token pairs instance.
+* Support for limit price orders for multiple orders on multiple token pairs instances.
 
 
 <br>
-
-
 
 
 ---
 
 
 ## Execution specs
-
-
-
 
 
 > A limit order is an order to buy or sell with a restriction on the maximum price to be paid or the minimum price to be received (the "limit price").
@@ -78,7 +73,7 @@ surplus = exec_buy_amount  - exec_sell_amount / limit_price
 
 #### Amounts representation
 
-All amounts are expressed by non-negative integer numbers, represented in atoms (i.e., multiples of 10^18). We add `_` to results to denote decimal position, allowing easier reading.
+All amounts are expressed by non-negative integer numbers, represented in atoms (i.e., multiples of `10**18`). We add an underline (`_`) to results to denote decimal position, allowing easier reading.
 
 ---
 
@@ -157,55 +152,62 @@ cowsol
 
 ## Usage
 
-
-#### Solving a spread trade
+#### Listing available pools in an order instance file
 
 ```
-cowsol -s <order file>
+cowsol -a <order file>
 ```
 <br>
 
-
-Example output (logging set to `DEBUG`):
+Example output:
 
 ```
-✅ Solving orders/instance_2.json with spread strategy.
-✅ FIRST LEG trade overview:
-✅ ➖ sell 1000_000000000000000000 of A
-✅ ➕ buy some amount of B2
-🟨     Surplus: 918_181818181818181818
-🟨     Exchange rate: 2.0
-🟨     Exec sell amount: 1000_000000000000000000
-🟨     Exec buy amount: 1818_181818181818181818
-🟨     Prior sell reserve: 10000_000000000000000000
-🟨     Initial buy reserve: 20000_000000000000000000
-🟨     Updated sell reserve: 11000_000000000000000000
-🟨     Updated buy reserve: 18181_818181818181818180
-🟨     Can fill?: True
-✅ SECOND LEG trade overview:
-✅ ➖ sell 1818_181818181818181818 of B2
-✅ ➕ buy some amount of C
-🟨     Surplus: 81_081081081081081081
-🟨     Exchange rate: 0.6666666666666666
-🟨     Exec sell amount: 1818_181818181818181818
-🟨     Exec buy amount: 1081_081081081081081081
-🟨     Prior sell reserve: 15000_000000000000000000
-🟨     Initial buy reserve: 10000_000000000000000000
-🟨     Updated sell reserve: 16818_181818181818181820
-🟨     Updated buy reserve: 8918_918918918918918919
-🟨     Can fill?: True
-✅ Total order surplus: 999_262899262899262899
-✅ Results saved at solutions/solution_2_cowsol.json.
+✅ AMMs available for orders/instance_1.json
+
+{   'AC': {   'reserves': {   'A': '10000_000000000000000000',
+                              'C': '10000_000000000000000000'}}}
+```
+
+
+
+<br>
+
+#### Listing orders in an order instance file
+
+```
+cowsol -o <order file>
 ```
 
 <br>
 
-* Input orders are located at `orders/`,
-* Solutions are located at `solutions/`.
+Example output:
+
+```
+✅ Orders for orders/instance_1.json
+
+{   '0': {   'allow_partial_fill': False,
+             'buy_amount': '900_000000000000000000',
+             'buy_token': 'C',
+             'is_sell_order': True,
+             'sell_amount': '1000_000000000000000000',
+             'sell_token': 'A'}}
+```
+
 
 <br>
 
-For example, this user order instance
+
+#### Solving a spread trade for one-leg limit price
+
+```
+cowsol -s orders/instance_1.json 
+```
+
+<br>
+
+For example, for this user order instance:
+
+<br>
 
 ```
 {
@@ -231,7 +233,37 @@ For example, this user order instance
 
 ```
 
-would generate the following solution
+<br>
+
+Generates this output (logging set to `DEBUG`):
+
+<br>
+
+```
+✅ Solving orders/instance_1.json with spread strategy.
+✅ One-leg trade overview:
+✅ ➖ sell 1000_000000000000000000 of A, amm reserve: 10000_000000000000000000
+✅ ➕ buy 900_000000000000000000 of C, amm reserve: 10000_000000000000000000
+🟨   Surplus: 9_090909090909090909
+🟨   Prior sell price 1.0
+🟨   Market sell price 1.21
+🟨   Prior buy price 1.0
+🟨   Market buy price 0.8264462809917356
+🟨   AMM exec sell amount: 1000_000000000000000000
+🟨   AMM exec buy amount: 909_090909090909090909
+🟨   Prior sell reserve: 10000_000000000000000000
+🟨   Initial buy reserve: 10000_000000000000000000
+🟨   Updated sell reserve: 11000_000000000000000000
+🟨   Updated buy reserve: 9090_909090909090909091
+🟨   Can fill: True
+✅ Results saved at solutions/solution_1_cowsol.json.
+```
+
+<br>
+
+And this solution:
+
+<br>
 
 ```
 {
@@ -258,9 +290,26 @@ would generate the following solution
 }
 ```
 
+<br>
+
+Note:
+
+* Input orders are located at `orders/`.
+* Solutions are located at `solutions/`.
 
 
-and this user order instance
+<br>
+
+#### Two-legs limit price trade for a single execution paths
+
+```
+cowsol -s orders/instance_2.json 
+```
+
+<br>
+
+
+For example, this user order instance:
 
 <br>
 
@@ -295,7 +344,45 @@ and this user order instance
 
 <br>
 
-generates this solution
+Generates this (`DEBUG`) output:
+
+
+```
+✅ Solving orders/instance_2.json with spread strategy.
+✅ FIRST LEG trade overview:
+✅ ➖ sell 1000_000000000000000000 of A
+✅ ➕ buy some amount of B2
+🟨     Surplus: 918_181818181818181818
+🟨     Exchange rate: 2.0
+🟨     Exec sell amount: 1000_000000000000000000
+🟨     Exec buy amount: 1818_181818181818181818
+🟨     Prior sell reserve: 10000_000000000000000000
+🟨     Initial buy reserve: 20000_000000000000000000
+🟨     Updated sell reserve: 11000_000000000000000000
+🟨     Updated buy reserve: 18181_818181818181818180
+🟨     Can fill?: True
+✅ SECOND LEG trade overview:
+✅ ➖ sell 1818_181818181818181818 of B2
+✅ ➕ buy some amount of C
+🟨     Surplus: 81_081081081081081081
+🟨     Exchange rate: 0.6666666666666666
+🟨     Exec sell amount: 1818_181818181818181818
+🟨     Exec buy amount: 1081_081081081081081081
+🟨     Prior sell reserve: 15000_000000000000000000
+🟨     Initial buy reserve: 10000_000000000000000000
+🟨     Updated sell reserve: 16818_181818181818181820
+🟨     Updated buy reserve: 8918_918918918918918919
+🟨     Can fill?: True
+✅ Total order surplus: 999_262899262899262899
+✅ Results saved at solutions/solution_2_cowsol.json.
+```
+
+<br>
+
+And this solution:
+
+<br>
+
 
 ```
 {
@@ -330,43 +417,94 @@ generates this solution
 
 <br>
 
-#### Listing available pools in an order instance file
 
-```
-cowsol -a <order file>
-```
+#### Two-legs limit price trade for multiple execution paths
+
+
 <br>
 
-Example output:
-
 ```
-✅ AMMs available for orders/instance_1.json
-
-{   'AC': {   'reserves': {   'A': '10000_000000000000000000',
-                              'C': '10000_000000000000000000'}}}
+cowsol -s orders/instance_2.json 
 ```
 
 <br>
 
-#### Listing orders in an order instance file
+
+For example, this user order instance:
+
+<br>
 
 ```
-cowsol -o <order file>
+{
+    "orders": {
+        "0": {
+            "sell_token": "A",
+            "buy_token": "C",
+            "sell_amount": "1000_000000000000000000",
+            "buy_amount": "900_000000000000000000",
+            "allow_partial_fill": false,
+            "is_sell_order": true
+        }
+    },
+    "amms": {
+        "AB1": {
+            "reserves": {
+                "A": "10000_000000000000000000",
+                "B1": "20000_000000000000000000"
+            }
+        },
+        "AB2": {
+            "reserves": {
+                "A": "20000_000000000000000000",
+                "B2": "10000_000000000000000000"
+            }
+        },        
+        "AB3": {
+            "reserves": {
+                "A": "12000_000000000000000000",
+                "B3": "12000_000000000000000000"
+            }
+        },        
+        "B1C": {
+            "reserves": {
+                "B1": "23000_000000000000000000",
+                "C": "15000_000000000000000000"
+            }
+        },
+        "B2C": {
+            "reserves": {
+                "B2": "10000_000000000000000000",
+                "C": "15000_000000000000000000"
+            }
+        },
+        "B3C": {
+            "reserves": {
+                "B3": "10000_000000000000000000",
+                "C": "15000_000000000000000000"
+            }
+        }
+    }
+}
+
+```
+
+
+<br>
+
+Generates this (`DEBUG`) output:
+
+<br>
+
+```
+
 ```
 
 <br>
 
-Example output:
+And this solution:
 
 ```
-✅ Orders for orders/instance_1.json
 
-{   '0': {   'allow_partial_fill': False,
-             'buy_amount': '900_000000000000000000',
-             'buy_token': 'C',
-             'is_sell_order': True,
-             'sell_amount': '1000_000000000000000000',
-             'sell_token': 'A'}}
 ```
 
 
@@ -376,17 +514,30 @@ Example output:
 
 ## Features to be added
 
-* Add support for concurrency (`async`).
-* Implement support for AMM fees.
-* Add cyclic arbitrage detection.
-* Add balancer weighted pools.
-* Add stable pools.
-* Implement other sources of liquidity.
-* Finish implementing and test end-to-end **buy** limit orders.
-* Add support for 3 or more legs.
+### Strategies
+
+
+* Add support for more than two legs.
+* Add multiple path graph weighting and cyclic arbitrage detection using the Bellman-Ford algorithm, so that we can optimize by multiple paths without necessarily dividing the order through them. This would allow obtaining arbitrage profit through finding profitable negative cycles (*e.g.*, `A -> B -> C -> D -> A`).
+
+
+<br>
+
+### Liquidity sources
+
+* Add support for Balancer's weighted pools.
+* Add support for Uniswap v3 and forks.
+* Add support for stable pools.
+
+<br>
+
+### Code improvement
+
+* Add support for concurrency (`async`), so tasks could run in parallel adding temporal advantage to the solver.
+* Implement support for AMM fees when calculating surplus.
+* Add an actual execution class (through CoW server or directly to the blockchains).
+* Finish implementing end-to-end BUY limit orders.
 * Add unit tests.
-
-
 
 <br>
 
