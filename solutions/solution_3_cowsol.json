@@ -12,18 +12,6 @@
             "exec_sell_amount": "1098_901098901098901099",
             "exec_buy_amount": "1818_181818181818181818"
         },
-        "AB2": {
-            "sell_token": "B2",
-            "buy_token": "A",
-            "exec_sell_amount": "476_190476190476190476",
-            "exec_buy_amount": "1000_000000000000000000"
-        },
-        "B2C": {
-            "sell_token": "C",
-            "buy_token": "B2",
-            "exec_sell_amount": "681_818181818181818181",
-            "exec_buy_amount": "476_190476190476190476"
-        },
         "AB3": {
             "sell_token": "B3",
             "buy_token": "A",
@@ -45,7 +33,7 @@
             "sell_amount": "1000_000000000000000000",
             "buy_token": "C",
             "sell_token": "A",
-            "exec_buy_amount": "3048_324914522097620688",
+            "exec_buy_amount": "2366_506732703915802507",
             "exec_sell_amount": "1000_000000000000000000"
         }
     }

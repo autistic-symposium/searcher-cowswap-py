@@ -112,20 +112,20 @@ def create_dir(result_dir) -> None:
 
 
 def set_output(env_vars, input_file) -> str:
-        """Create an output destination to save solutions."""
+    """Create an output destination to save solutions."""
 
-        try:
-            output_dir = env_vars['OUTPUT_DIR']
-            create_dir(output_dir)
+    try:
+        output_dir = env_vars['OUTPUT_DIR']
+        create_dir(output_dir)
 
-            output_str = input_file.split('_')[1].split('.json')[0] 
-            output_file_str = env_vars['OUTPUT_FILE_STR']
-            output_file = output_file_str.format(output_str)
-            return format_path(output_dir, output_file)
+        output_str = input_file.split('_')[1].split('.json')[0] 
+        output_file_str = env_vars['OUTPUT_FILE_STR']
+        output_file = output_file_str.format(output_str)
+        return format_path(output_dir, output_file)
 
-        except (TypeError, KeyError) as e:
-            log_error(f'Could not format output file. Check .env')
-            sys.exit(1)
+    except (TypeError, KeyError) as e:
+        log_error(f'Could not format output file. Check .env')
+        sys.exit(1)
 
 def deep_copy(dict_to_clone) -> dict:
     """Deep copy (not reference copy) to a dict."""

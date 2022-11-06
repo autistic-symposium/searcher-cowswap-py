@@ -6,6 +6,7 @@
 from decimal import Decimal
 from src.util.arithmetics import div, to_decimal
 
+
 class ConstantProductAmmApi(object):
 
     def __init__(self, order, amms):
@@ -19,7 +20,6 @@ class ConstantProductAmmApi(object):
         # Reserves data
         self.buy_token_reserve = to_decimal(amms['buy_reserve'])
         self.sell_token_reserve = to_decimal(amms['sell_reserve'])
-
 
     ###############################
     #     Private methods         #
@@ -67,7 +67,7 @@ class ConstantProductAmmApi(object):
         return to_decimal(exec_amount) - to_decimal(amount)
 
     @staticmethod
-    def _calculate_exchange_rate(sell_reserve, buy_reserve):
+    def _calculate_exchange_rate(sell_reserve, buy_reserve) -> Decimal:
         """Calculate the exchange rate between a pair of tokens."""
         return div(buy_reserve, sell_reserve)
 
@@ -91,7 +91,7 @@ class ConstantProductAmmApi(object):
         amm_exec_buy_amount = int(self.sell_amount)
         amm_exec_sell_amount = int(self._calculate_exec_sell_amount())
 
-        # Check limit price for exec_sell_ammount
+        # Check limit price for amm_exec_sell_ammount
         can_fill = self._can_fill_order(amm_exec_buy_amount, self.sell_amount)
 
         # Calculate surplus for this sell order
@@ -102,27 +102,35 @@ class ConstantProductAmmApi(object):
         prior_buy_token_reserve = int(self.buy_token_reserve)
         updated_sell_token_reserve = int(self.sell_token_reserve + amm_exec_buy_amount)
         updated_buy_token_reserve = int(self.buy_token_reserve - amm_exec_sell_amount)
-        exchange_rate = float(self._calculate_exchange_rate(prior_sell_token_reserve, \
-                                                        prior_buy_token_reserve))
+        prior_buy_price = float(self._calculate_exchange_rate( \
+                                    prior_sell_token_reserve, prior_buy_token_reserve))
+        market_buy_price = float(self._calculate_token_price( \
+                                    updated_sell_token_reserve, updated_buy_token_reserve))
+        prior_sell_price = float(self._calculate_exchange_rate( \
+                                    prior_buy_token_reserve, prior_sell_token_reserve))
+        market_sell_price = float(self._calculate_token_price( \
+                                    updated_buy_token_reserve, updated_sell_token_reserve))
 
         # Return order execution simulation results
         return({
-            'exchange_rate': exchange_rate,
             'surplus': surplus,
-            'amm_exec_sell_amount': amm_exec_buy_amount,
-            'amm_exec_buy_amount': amm_exec_sell_amount,
+            'prior_buy_price': prior_buy_price,
+            'market_buy_price': market_buy_price,
+            'prior_sell_price': prior_sell_price,
+            'market_sell_price': market_sell_price,
             'updated_sell_token_reserve': updated_sell_token_reserve,
             'updated_buy_token_reserve': updated_buy_token_reserve,
             'prior_sell_token_reserve': prior_sell_token_reserve,
             'prior_buy_token_reserve': prior_buy_token_reserve,
+            'amm_exec_sell_amount': amm_exec_buy_amount,
+            'amm_exec_buy_amount': amm_exec_sell_amount,
+            'updated_sell_token_reserve': updated_sell_token_reserve,
             'can_fill': can_fill
         })
-
 
     def trade_buy_order(self) -> dict:
         """Get buy limit order data for a list of reserves."""
         raise NotImplementedError
-
 
     def solve(self) -> dict:
         """Entry point for this class."""
