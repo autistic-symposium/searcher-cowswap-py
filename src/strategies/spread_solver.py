@@ -3,7 +3,7 @@
 # This class implements a solver for spread arbitrage.
 
 from src.util.strings import to_solution
-from src.util.arithmetics import to_decimal
+from src.util.arithmetics import to_decimal, div
 from src.apis.uniswapv2 import ConstantProductAmmApi
 from src.util.os import log_debug, log_error, log_info, deep_copy
 
@@ -241,146 +241,51 @@ class SpreadSolverApi(object):
 
     def _calculate_best_muultiple_paths(self, simulated_amms) -> dict:
         """
-            Apply multi-variable calculus to optimize the problem of
-            multiple amms paths for a two-legs trade order.     
+            Apply multi-variable calculus to optimize the problem 
+            of multiple amms paths for a two-legs trade order.     
         """
-        from src.util.arithmetics import div
-        from src.util.strings import to_decimal
-
         order_sell_amount_cte = 1000000000000000000000 # sell A
         order_buy_amount_cte = 900000000000000000000 # buy C
 
-        ab1_buy_reserve_cte = 10000000000000000000000 # amm buy A, order sell A
-        ab1_sell_reserve_cte = 20000000000000000000000 # amm sell B3, order buy B3
-        ab3_buy_reserve_cte = 12000000000000000000000 # amm buy A, order sell A
-        ab3_sell_reserve_cte = 12000000000000000000000 # amm sell B3, order buy B3
-        b1c_buy_reserve_cte = 23000000000000000000000 # amm buy B1, order sell B1
-        b1c_sell_reserve_cte = 15000000000000000000000 # amm sell C, order buy C
-        b3c_buy_reserve_cte = 10000000000000000000000# amm buy B3, order sell B3
-        b3c_sell_reserve_cte = 15000000000000000000000# amm sell C, order buy C
+        ab1_sell_reserve_cte = 10000000000000000000000 # order sell A
+        ab1_buy_reserve_cte = 20000000000000000000000 # order buy B3
+        ab3_sell_reserve_cte = 12000000000000000000000 # order sell A
+        ab3_buy_reserve_cte = 12000000000000000000000 # order buy B3
+        b1c_sell_reserve_cte = 23000000000000000000000 #order sell B1
+        b1c_buy_reserve_cte = 15000000000000000000000 # order buy C
+        b3c_sell_reserve_cte = 10000000000000000000000 # order sell B3
+        b3c_buy_reserve_cte = 15000000000000000000000 # order buy C
 
-
-        ab1_sell_reserve_cte = 10000000000000000000000 # amm buy A, order sell A
-        ab1_buy_reserve_cte = 20000000000000000000000 # amm sell B3, order buy B3
-        ab3_sell_reserve_cte = 12000000000000000000000 # amm buy A, order sell A
-        ab3_buy_reserve_cte = 12000000000000000000000 # amm sell B3, order buy B3
-        b1c_sell_reserve_cte = 23000000000000000000000 # amm buy B1, order sell B1
-        b1c_buy_reserve_cte = 15000000000000000000000 # amm sell C, order buy C
-        b3c_sell_reserve_cte = 10000000000000000000000# amm buy B3, order sell B3
-        b3c_buy_reserve_cte = 15000000000000000000000# amm sell C, order buy C
-
-
-        limit_price_cte = div(order_sell_amount_cte, order_buy_amount_cte) 
+        limit_price_cte = order_sell_amount_cte / order_buy_amount_cte
 
         # a -> b
         ab1_buy_amount = 289034099526748718745
-        ab3_buy_amount = order_sell_amount_cte - ab1_buy_amount
+        ab1_buy_amount_max = order_sell_amount_cte
+        ab1_buy_amount_min = 0
+        
+        def surplus_equation(ab1_buy_amount):
+            return (b1c_buy_reserve_cte * (ab1_buy_reserve_cte * ab1_buy_amount) / \
+                    (ab1_sell_reserve_cte + ab1_buy_amount)) / (b1c_sell_reserve_cte + \
+                    (ab1_buy_reserve_cte * ab1_buy_amount) / (ab1_sell_reserve_cte + ab1_buy_amount)) + \
+                    (b3c_buy_reserve_cte * (ab3_buy_reserve_cte * (order_sell_amount_cte - ab1_buy_amount)) / \
+                    (ab3_sell_reserve_cte + (order_sell_amount_cte - ab1_buy_amount))) / \
+                    (b3c_sell_reserve_cte + (ab3_buy_reserve_cte * (order_sell_amount_cte - ab1_buy_amount)) / \
+                    (ab3_sell_reserve_cte + (order_sell_amount_cte - ab1_buy_amount))) - \
+                    order_sell_amount_cte / limit_price_cte
 
-        ab1_sell_amount = int(div(ab1_buy_reserve_cte * ab1_buy_amount, ab1_sell_reserve_cte + ab1_buy_amount))
-        ab3_sell_amount = int(div(ab3_buy_reserve_cte * ab3_buy_amount, ab3_sell_reserve_cte + ab3_buy_amount))
-
-        # b -> c
-        b1c_buy_amount = ab1_sell_amount
-        b3c_buy_amount = ab3_sell_amount
-
-        b1c_sell_amount = int(div(b1c_buy_reserve_cte * b1c_buy_amount, b1c_sell_reserve_cte + b1c_buy_amount))
-        b3c_sell_amount = int(div(b3c_buy_reserve_cte * b3c_buy_amount, b3c_sell_reserve_cte + b3c_buy_amount))
-
-        order_exec_sell_amount = order_sell_amount_cte # y
-        order_exec_buy_amount =  b1c_sell_amount + b3c_sell_amount #x
-
-        surplus_this = order_exec_buy_amount - order_buy_amount_cte
-
-        # x - y/pi
-        this_surplus = order_exec_buy_amount - int(div(order_exec_sell_amount, limit_price_cte))
+        print(surplus_equation(ab1_buy_amount))
+        
+        
+        import scipy
 
 
-        print(to_solution(this_surplus))
-        print(to_solution(surplus_this))
+        ab1_buy_amount = scipy.optimize.fmin(lambda x: -surplus_equation(x), x0 = order_sell_amount_cte/2)
+
+        print(ab1_buy_amount)
 
         import sys
         sys.exit()
-
-
-        from src.util.strings import pprint
-
-        from src.util.arithmetics import div, to_decimal
-        from decimal import Decimal
-
-        pprint(simulated_amms)
-
-        def _calculate_limit_price(sell_amount, buy_amount) -> Decimal:
-            """Calculate the limit price of a given order."""
-            return div(sell_amount, buy_amount)
-
-        #for amm_name, amm_data in simulated_amms.items():
-        ab1_exec_buy = to_solution(simulated_amms['AB1']['amm_exec_buy_amount'])
-        ab1_exec_sell = to_solution(simulated_amms['AB1']['amm_exec_sell_amount'])
-        ab1_prior_price = simulated_amms['AB1']['prior_buy_price']
-        ab1_market_price = simulated_amms['AB1']['market_buy_price']
-        ab1_surplus = simulated_amms['AB1']['surplus']
-        ab1_buy_reserve = to_solution(simulated_amms['AB1']['prior_buy_token_reserve'])
-        ab1_sell_reserve =   to_solution(simulated_amms['AB1']['prior_sell_token_reserve'])
-        ab1_limit_price = _calculate_limit_price(ab1_exec_sell, ab1_exec_buy)
-
-
-        b1c_exec_buy = to_solution(simulated_amms['B1C']['amm_exec_buy_amount'])
-        b1c_exec_sell = to_solution(simulated_amms['B1C']['amm_exec_sell_amount'])
-        b1c_prior_price = simulated_amms['B1C']['prior_buy_price']
-        b1c_market_price = simulated_amms['B1C']['market_buy_price']
-        b1c_surplus = simulated_amms['B1C']['surplus']
-        b1c_buy_reserve = to_solution(simulated_amms['B1C']['prior_buy_token_reserve'])
-        b1c_sell_reserve =   to_solution(simulated_amms['B1C']['prior_sell_token_reserve'])
-        b1c_limit_price = _calculate_limit_price(b1c_exec_sell, b1c_exec_buy)
-
-        ab3_exec_buy = to_solution(simulated_amms['AB3']['amm_exec_buy_amount'])
-        ab3_exec_sell = to_solution(simulated_amms['AB3']['amm_exec_sell_amount'])
-        ab3_prior_price = simulated_amms['AB3']['prior_buy_price']
-        ab3_market_price = simulated_amms['AB3']['market_buy_price']
-        ab3_surplus = simulated_amms['AB3']['surplus']
-        ab3_buy_reserve = to_solution(simulated_amms['AB3']['prior_buy_token_reserve'])
-        ab3_sell_reserve =   to_solution(to_solution(simulated_amms['AB3']['prior_sell_token_reserve']))
-        ab3_limit_price = _calculate_limit_price(ab3_exec_sell, ab3_exec_buy)        
-
-        b3c_exec_buy = to_solution(simulated_amms['B3C']['amm_exec_buy_amount'])
-        b3c_exec_sell = to_solution(simulated_amms['B3C']['amm_exec_sell_amount'])
-        b3c_prior_price = simulated_amms['B3C']['prior_buy_price']
-        b3c_market_price = simulated_amms['B3C']['market_buy_price']
-        b3c_surplus = simulated_amms['B3C']['surplus']
-        b3c_buy_reserve = to_solution(simulated_amms['B3C']['prior_buy_token_reserve'])
-        b3c_sell_reserve =  to_solution(simulated_amms['B3C']['prior_sell_token_reserve'])
-        b3c_limit_price = _calculate_limit_price(b3c_exec_sell, b3c_exec_buy)
-
-        print('ab1_limit_price', ab1_limit_price, to_solution(ab1_surplus))
-        print('b1c_limit_price', b1c_limit_price, to_solution(b1c_surplus))
-        print('ab3_limit_price', ab3_limit_price, to_solution(ab3_surplus))
-        print('b3c_limit_price', b3c_limit_price, to_solution(b3c_surplus))
-        print()
-
-        utility_ab1 = ab1_surplus * ab1_prior_price 
-        utility_b1c = b1c_surplus * b1c_prior_price 
-        utility_ab3 = ab3_surplus * ab3_prior_price 
-        utility_b3c = b3c_surplus * b3c_prior_price 
-
-        print('utility_ab1', utility_ab1, ab1_prior_price)
-        print('utility_b1c', utility_b1c, b1c_prior_price)
-        print('utility_ab3', utility_ab3, ab3_prior_price)
-        print('utility_b3c', utility_b3c, b3c_prior_price)
-
-        print(1 - ab1_prior_price / b1c_prior_price)
-        print(1 -ab3_prior_price / b3c_prior_price)
-
-
         return simulated_amms
-
-    #######
-    #######    #######
-    #######    #######
-    #######
-    #######
-    #######
-
-
 
     def _run_two_legs_trade(self, this_order, amms) -> dict:
         """
