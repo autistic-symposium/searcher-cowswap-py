@@ -44,10 +44,10 @@ class SpreadSolverApi(object):
                                         buy_amount, buy_token, amm_buy_reserve) -> None:
         """Print input info from a one-leg trade order."""
 
-        log_info(f"One-leg trade overview:")
-        log_info(f"➖ sell {to_solution(sell_amount)} of {sell_token}," + \
+        log_info("One-leg trade overview:")
+        log_info(f"➖ sell {to_solution(sell_amount)} of {sell_token}," + 
                             f" amm reserve: {to_solution(amm_sell_reserve)}")
-        log_info(f"➕ buy {to_solution(buy_amount)} of {buy_token}," + \
+        log_info(f"➕ buy {to_solution(buy_amount)} of {buy_token}," + 
                             f" amm reserve: {to_solution(amm_buy_reserve)}")
             
 
@@ -87,7 +87,7 @@ class SpreadSolverApi(object):
         
         err = err or 10000 
         if int(exec_amount) - (int(amount) + surplus) > err:
-            log_error('This message should never appear as it indicates that tokens ' + \
+            log_error('This message should never appear as it indicates that tokens ' + 
                       'are not conserved at 1st leg: exec_amount != amount + surplus')
                             
     @staticmethod                        
@@ -100,9 +100,8 @@ class SpreadSolverApi(object):
         
         err = err or 10000 
         if int(exec_sell_amount_leg1) - int(exec_buy_amount_leg2) > err:
-            log_error('This message should never appear as it indicates that tokens ' + \
+            log_error('This message should never appear as it indicates that tokens ' + 
             'are not conserved at 2nd leg: exec_sell_amount_leg1 != exec_buy_amount_leg2')
-
 
     ###########################################
     #     Private methods: One-leg strategy   #
@@ -139,14 +138,13 @@ class SpreadSolverApi(object):
         self._are_tokens_conserved_first_leg(exec_sell_amount, 
                                         order['buy_amount'], solution['surplus'])
 
-        return { leg_label: {
+        return {leg_label: {
                         'sell_token': order['buy_token'],
                         'buy_token': order['sell_token'],
                         'exec_buy_amount': to_solution(exec_buy_amount),
                         'exec_sell_amount': to_solution(exec_sell_amount),
                      }
                 }
-
 
     ###########################################
     #     Private methods: Two-legs strategy  #
@@ -223,7 +221,7 @@ class SpreadSolverApi(object):
             # Print results
             self._print_extra_info(solution_second_leg)
             self._print_total_order_surplus(total_surplus)
-            
+
             # Save results
 
             solution_first_leg['amm_buy_token'] = first_leg_data['buy_token']
@@ -237,16 +235,10 @@ class SpreadSolverApi(object):
             this_amms.update(
                 { 
                     first_leg_label: solution_first_leg,
-                    second_leg_label: solution_second_leg 
+                    second_leg_label: solution_second_leg
                 })
 
         return this_amms
-
-
-    #######
-    #######
-    #######
-
 
     def _calculate_best_trade_path(self, simulated_amms) -> dict:
         """fff"""
@@ -297,7 +289,7 @@ class SpreadSolverApi(object):
         b3c_market_price = simulated_amms['B3C']['market_buy_price']
         b3c_surplus = simulated_amms['B3C']['surplus']
         b3c_buy_reserve = to_solution(simulated_amms['B3C']['prior_buy_token_reserve'])
-        b3c_sell_reserve =   to_solution(simulated_amms['B3C']['prior_sell_token_reserve'])
+        b3c_sell_reserve =  to_solution(simulated_amms['B3C']['prior_sell_token_reserve'])
         b3c_limit_price = _calculate_limit_price(b3c_exec_sell, b3c_exec_buy)
 
         print('ab1_limit_price', ab1_limit_price, to_solution(ab1_surplus))
@@ -333,13 +325,13 @@ class SpreadSolverApi(object):
 
     def _run_two_legs_trade(self, this_order, amms) -> dict:
         """
-            Run a two-legs simulation trade for an order to a list of pools, 
+            Run a two-legs simulation trade for an order to a list of pools,
             for either one or multiple execution paths, then calculate the
             most optimal path for this trade, returning the final solution.
         """
 
         solution = {}
-        simulated_amms = self._run_two_legs_simulation(this_order, amms) 
+        simulated_amms = self._run_two_legs_simulation(this_order, amms)
 
         # If this two-legs trade has multiple paths, optimize for them.
         if len(simulated_amms) > 2:
@@ -347,18 +339,17 @@ class SpreadSolverApi(object):
 
         # Save the amms solution to a suitable format.
         for amm_name, amm_data in simulated_amms.items():
-            solution.update( 
-                { amm_name: 
+            solution.update(
+                {amm_name:
                     {
                         'sell_token': amm_data['amm_buy_token'],
                         'buy_token': amm_data['amm_sell_token'],
                         'exec_sell_amount': to_solution(amm_data['amm_exec_buy_amount']),
                         'exec_buy_amount': to_solution(amm_data['amm_exec_sell_amount'])
                     }
-            })
+                })
 
         return solution
-
 
     ##################################
     #     Private methods: Utils     #
@@ -372,12 +363,12 @@ class SpreadSolverApi(object):
         for leg_label, leg_data in this_amms.items():
             if leg_label[-1] == leg_data[final_token]:
                 legs_exec_amount += to_decimal(leg_data[exec_amount_key])
-        
+
         return legs_exec_amount
 
     def _to_order_solution(self, this_order, this_amms) -> dict:
         """Format order dict to save as the result solution."""
-        
+
         this_order['sell_amount'] = to_solution(this_order['sell_amount'])
         this_order['buy_amount'] = to_solution(this_order['buy_amount'])
 
@@ -387,19 +378,18 @@ class SpreadSolverApi(object):
             exec_sell_amount = this_order['sell_amount']
             exec_buy_amount = self._get_total_exec_amount(this_amms,
                                              'exec_sell_amount', 'sell_token')
-            
+
         else:
             exec_buy_amount = this_order['buy_amount']
             exec_sell_amount = self._get_total_exec_amount(this_amms,
                                             'exec_buy_amount', 'buy_token')
-            
+
         this_order['exec_buy_amount'] = to_solution(exec_buy_amount)
         this_order['exec_sell_amount'] = to_solution(exec_sell_amount)
 
         del this_order['order_num']
-        
-        return { order_num: this_order }
 
+        return {order_num: this_order}
 
     ###########################
     #   Public methods        #
@@ -411,19 +401,19 @@ class SpreadSolverApi(object):
         amms_solution = {}
         orders_solution = {}
 
-        for trade_type, amms_data in self.__amms.items():     
+        for trade_type, amms_data in self.__amms.items():
             this_amms = {}
 
             if trade_type == 'one_leg_trade':
                 this_amms = self._run_one_leg_trade(order, amms_data)
-    
+
             elif trade_type == 'two_legs_trade':
                 this_amms = self._run_two_legs_trade(order, amms_data)
-                
+
             else:
                 log_error(f'No valid reserve or support for"{trade_type}"')
 
-            # Format order dict to add results from executed trade.    
+            # Format order dict to add results from executed trade.
             this_order = self._to_order_solution(order, this_amms)
 
             amms_solution.update(this_amms)

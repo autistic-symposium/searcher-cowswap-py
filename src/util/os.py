@@ -29,10 +29,10 @@ def set_logging(log_level) -> None:
 
 def load_config() -> dict:
     """Load and set environment variables."""
-    
+
     env_file = Path('.') / '.env'
     if not os.path.isfile(env_file):
-        log_error(f'Please create an .env file')
+        log_error('Please create an .env file')
         sys.exit(1)
 
     env_vars = {}
@@ -41,7 +41,7 @@ def load_config() -> dict:
     try:
         env_vars['OUTPUT_DIR'] = os.getenv("OUTPUT_DIR")
         env_vars['OUTPUT_FILE_STR'] = os.getenv("OUTPUT_FILE_STR")
-        env_vars['INPUT_FILE_STR'] = os.getenv("INPUT_FILE_STR") 
+        env_vars['INPUT_FILE_STR'] = os.getenv("INPUT_FILE_STR")
 
         set_logging(os.getenv("LOG_LEVEL"))
 
@@ -54,25 +54,25 @@ def load_config() -> dict:
 
 def log_error(string) -> None:
     """Print STDOUT error using the logging library."""
-    
+
     logging.error(f'🚨 {string}')
 
 
 def log_info(string) -> None:
     """Print STDOUT info using the logging library."""
-    
+
     logging.info(f'✅ {string}')
 
 
 def log_debug(string) -> None:
     """Print STDOUT debug using the logging library."""
-   
+
     logging.debug(f'🟨 {string}')
 
 
 def open_json(filepath) -> dict:
     """Load and parse a file."""
-   
+
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             return json.load(f)
@@ -84,19 +84,19 @@ def open_json(filepath) -> dict:
 
 def format_path(dir_path, filename) -> str:
     """Format a OS full filepath."""
-    
+
     return os.path.join(dir_path, filename)
 
 
 def format_output_file(name) -> str:
     """Format the name for the result file."""
-    
+
     return f'{name}.json'
 
 
 def save_output(destination, data) -> None:
     """Save data from memory to a destination in disk."""
-    
+
     try:
         with open(destination, 'w') as outfile:
             json.dump(data, outfile, indent=4)
@@ -107,33 +107,33 @@ def save_output(destination, data) -> None:
 
 def create_dir(result_dir) -> None:
     """Check whether a directory exists and create it if needed."""
-   
+
     try:
         if not os.path.isdir(result_dir):
             os.mkdir(result_dir)
-            
+
     except OSError as e:
         log_error(f'Could not create {result_dir}: {e}')
 
 
 def set_output(env_vars, input_file) -> str:
     """Create an output destination to save solutions."""
-   
+
     try:
         output_dir = env_vars['OUTPUT_DIR']
         create_dir(output_dir)
 
-        output_str = input_file.split('_')[1].split('.json')[0] 
+        output_str = input_file.split('_')[1].split('.json')[0]
         output_file_str = env_vars['OUTPUT_FILE_STR']
         output_file = output_file_str.format(output_str)
         return format_path(output_dir, output_file)
 
     except (TypeError, KeyError) as e:
-        log_error(f'Could not format output file. Check .env')
+        log_error(f'Could not format output file: {e}')
         sys.exit(1)
 
 
 def deep_copy(dict_to_clone) -> dict:
     """Deep copy (not reference copy) to a dict."""
-  
+
     return copy.deepcopy(dict_to_clone)

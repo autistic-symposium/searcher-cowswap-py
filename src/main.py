@@ -55,12 +55,12 @@ def run() -> None:
 
         # Create an instance for the entire instance input file.
         oa = OrdersApi(input_file)
-        
+
         result = {
             'amms': {},
             'orders': {}
         }
-        
+
         for order_num, order in oa.orders.items():
 
             order = oa.parse_order_for_spread_trade(order, order_num)
@@ -75,17 +75,16 @@ def run() -> None:
             solution = solver.solve(order)
 
             # Update results for orders instance.
-            result['amms'].update(solution['amms']) 
-            result['orders'].update(solution['orders']) 
+            result['amms'].update(solution['amms'])
+            result['orders'].update(solution['orders'])
 
-        output_destination = set_output(env_vars, input_file)   
+        output_destination = set_output(env_vars, input_file)
         save_output(output_destination, result)
         log_info(f'Results saved at {output_destination}.')
-    
+
     else:
         parser.print_help()
 
 
 if __name__ == "__main__":
     run()
-    
