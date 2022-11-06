@@ -1,4 +1,4 @@
-.PHONY: clean install install_deps
+.PHONY: clean install install_deps lint
 
 clean:
 	@find . -iname '*.py[co]' -delete
@@ -7,9 +7,8 @@ clean:
 	@rm -rf dist/
 	@rm -rf build/
 	@rm -rf *.egg-info
-	@rm -rf Pipfile.lock
 	@rm -rf .tox
-	@rm -rf venv/lib/python*/site-packages/bdex*.egg
+	@rm -rf venv/lib/python*/site-packages/*.egg
 
 install:
 	python3 setup.py install
