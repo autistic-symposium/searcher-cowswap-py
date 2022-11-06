@@ -1,4 +1,4 @@
-# ✨🐮 COW Arbitrage Solver 👾✨ 
+# ✨🐮 CoW Arbitrage Solver 👾✨ 
 
 <br>
 
