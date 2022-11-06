@@ -1,4 +1,4 @@
-# ✨🐮 CoW Arbitrage Solver 👾✨ 
+# ✨🐮 COWSOL: CoW Arbitrage Solver 👾✨ 
 
 <br>
 
@@ -14,7 +14,7 @@
 
 ---
 
-## Strategies
+## Current Strategies
 
 
 #### Spread trades
@@ -330,7 +330,7 @@ generates this solution
 
 <br>
 
-#### Listing available amms in an order instance file
+#### Listing available pools in an order instance file
 
 ```
 cowsol -a <order file>
@@ -376,7 +376,7 @@ Example output:
 
 ## Features to be added
 
-* Add support for concurrence (`async`).
+* Add support for concurrency (`async`).
 * Implement support for AMM fees.
 * Add cyclic arbitrage detection.
 * Add balancer weighted pools.
@@ -396,4 +396,4 @@ Example output:
 ## Resources
 
 * [cow.fi](http://cow.fi/)
-* [In-depth solver specification](https://docs.cow.fi/off-chain-services/in-depth-solver-specification)
+* [Solver specs](https://docs.cow.fi/off-chain-services/in-depth-solver-specification)
