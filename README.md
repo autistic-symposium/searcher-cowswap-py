@@ -200,12 +200,12 @@ Example output (logging set to `DEBUG`):
 
 <br>
 
-* Input orders are located at 'orders/'.
-* Solutions are located at 'solutions/'.
+* Input orders are located at `orders/`,
+* Solutions are located at `solutions/`.
 
 <br>
 
-For instance, for a user order instance:
+For example, this user order instance
 
 ```
 {
@@ -231,7 +231,7 @@ For instance, for a user order instance:
 
 ```
 
-generates the following solution:
+would generate the following solution
 
 ```
 {
@@ -260,7 +260,7 @@ generates the following solution:
 
 
 
-and for a user order instance:
+and this user order instance
 
 <br>
 
@@ -295,7 +295,7 @@ and for a user order instance:
 
 <br>
 
-The solution is:
+generates this solution
 
 ```
 {

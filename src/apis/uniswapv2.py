@@ -67,7 +67,7 @@ class ConstantProductAmmApi(object):
         return to_decimal(exec_amount) - to_decimal(amount)
 
     @staticmethod
-    def _calculate_exchange_rate(sell_reserve, buy_reserve):
+    def _calculate_exchange_rate(sell_reserve, buy_reserve) -> Decimal:
         """Calculate the exchange rate between a pair of tokens."""
         return div(buy_reserve, sell_reserve)
 

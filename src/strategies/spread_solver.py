@@ -2,7 +2,6 @@
 # strategies/spread_solver.py
 # This class implements a solver for spread arbitrage.
 
-from unittest import result
 from src.util.strings import to_solution
 from src.util.arithmetics import to_decimal
 from src.apis.uniswapv2 import ConstantProductAmmApi
@@ -11,9 +10,7 @@ from src.util.os import log_debug, log_error, log_info, deep_copy
 class SpreadSolverApi(object):
 
     def __init__(self, amms):
-
         self.__amms = amms
-
 
     ###########################################
     #     Private methods: Pretty print       #
@@ -144,14 +141,11 @@ class SpreadSolverApi(object):
 
 
     ###########################################
-    #     Private methods: Two-leg strategy   #
+    #     Private methods: Two-legs strategy  #
     ###########################################
 
     def _run_two_legs_simulation(self, this_order, amms) -> dict:
-        """
-            Perform two-legs simulation trade for an order to a list 
-            of pools, for either one or multiple execution paths.
-        """
+        """Perform a multi-path simulation for a two-legs trade."""
         
         this_amms = {}
 
@@ -239,31 +233,41 @@ class SpreadSolverApi(object):
 
         return this_amms
 
+    def calculate_best_trade_path(self, simulated_amms) -> dict:
+        """fff"""
+        exec_buy_amount = '10'
+        exec_sell_amount = '11'
+
+        return exec_sell_amount, exec_buy_amount
+
 
     def _run_two_legs_trade(self, this_order, amms) -> dict:
         """
-            Perform two-legs simulation trade for an order to a list 
-            of pools, for either one or multiple execution paths.
+            Run a two-legs simulation trade for an order to a list of pools, 
+            for either one or multiple execution paths, then calculate the
+            most optimal path for this trade, returning the final solution.
         """
 
-        this_amms = self._run_two_legs_simulation(this_order, amms) 
-        result = {}
+        solution = {}
+        simulated_amms = self._run_two_legs_simulation(this_order, amms) 
 
-        for path, path_data in this_amms.items():
-            # note invert for aam
-            dict_aux = { 
-                path: 
+        # If this two-legs trade has multiple paths, optimize for them.
+        if len(simulated_amms) > 2:
+            simulated_amms = self.calculate_best_trade_path(simulated_amms)
+
+        # Save the amms solution to a suitable format.
+        for amm_name, amm_data in simulated_amms.items():
+            solution.update( 
+                { amm_name: 
                     {
-                        'sell_token': path_data['amm_buy_token'],
-                        'buy_token': path_data['amm_sell_token'],
-                        'exec_sell_amount': to_solution(path_data['amm_exec_buy_amount']),
-                        'exec_buy_amount': to_solution(path_data['amm_exec_sell_amount'])
+                        'sell_token': amm_data['amm_buy_token'],
+                        'buy_token': amm_data['amm_sell_token'],
+                        'exec_sell_amount': to_solution(amm_data['amm_exec_buy_amount']),
+                        'exec_buy_amount': to_solution(amm_data['amm_exec_sell_amount'])
                     }
-            }
+            })
 
-            result.update(dict_aux)
-
-        return result
+        return solution
 
 
     ##################################
