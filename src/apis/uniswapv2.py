@@ -80,11 +80,11 @@ class ConstantProductAmmApi(object):
         """
             Get sell limit order data for a list of reserves.
 
-            In this trade, the order will add "sell_token" to the reserve at the value
+            In this trade, the order would add "sell_token" to the reserve at the value
             of "sell_amount" and retrieve "buy_token" at a calculated "exec_buy_amount".
-            This will reflect the inverse in the amm: the reserve will receive token A 
+            This would have the inverse trade in the amm: the reserve would receive token A 
             at the amount "amm_exec_buy_amount" (which matches the order's exec_sell_amount),
-            and lose token C at "amm_exec_sell_amount" (orders' calculated exec_buy_amount).
+            and would lose token C at "amm_exec_sell_amount" (orders' exec_buy_amount).
         """
         
         # Calculate order execution data

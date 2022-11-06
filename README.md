@@ -41,7 +41,7 @@
 
 * Support for single order instances (limit price orders).
 * Support for multiple orders on a single token pairs instance.
-* Supposrt for multiple orders on multiple token pairs instances.
+* Support for multiple orders on multiple token pairs instances.
 
 
 
