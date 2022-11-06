@@ -252,10 +252,8 @@ class SpreadSolverApi(object):
         """ Optimize for two pool paths for a two-legs trade order,
             i.e., A -> C through A -> T1 -> C AND A -> T2 -> C.
         """
-    
 
         order_sell_amount_cte = 1000000000000000000000 # sell A
-        
         order_buy_amount_cte = 900000000000000000000 # buy C
 
         ab1_sell_reserve_cte = 10000000000000000000000 # order sell A
@@ -275,7 +273,7 @@ class SpreadSolverApi(object):
         ab1_buy_amount_min = 0
         
         def surplus_equation(ab1_buy_amount):
-            return (ab1_buy_reserve_cte * (ab1_buy_reserve_cte * ab1_buy_amount) / \
+            return (b1c_buy_reserve_cte * (ab1_buy_reserve_cte * ab1_buy_amount) / \
                     (ab1_sell_reserve_cte + ab1_buy_amount)) / (b1c_sell_reserve_cte + \
                     (ab1_buy_reserve_cte * ab1_buy_amount) / (ab1_sell_reserve_cte + ab1_buy_amount)) + \
                     (b3c_buy_reserve_cte * (ab3_buy_reserve_cte * (order_sell_amount_cte - ab1_buy_amount)) / \
@@ -296,6 +294,7 @@ class SpreadSolverApi(object):
         import sys
         sys.exit()
         return simulated_amms
+      
 
     def _run_two_legs_trade(self, this_order, amms) -> dict:
         """
