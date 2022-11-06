@@ -376,12 +376,13 @@ Example output:
 
 ## Features to be added
 
-* Implement AMM fees.
-* Add cyclic arbitrage support.
+* Add support for concurrence (`async`).
+* Implement support for AMM fees.
+* Add cyclic arbitrage detection.
 * Add balancer weighted pools.
 * Add stable pools.
 * Implement other sources of liquidity.
-* Finish implementing and test end-to-end buy limit orders.
+* Finish implementing and test end-to-end **buy** limit orders.
 * Add support for 3 or more legs.
 * Add unit tests.
 

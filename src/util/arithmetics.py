@@ -21,4 +21,3 @@ def to_decimal(value) -> Decimal:
 def to_percentage(value) -> str:
     """Format a percentage float to a suitable string."""
     return "%.8f%%" % (100 * value)
-

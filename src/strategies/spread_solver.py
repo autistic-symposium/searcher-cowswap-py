@@ -8,7 +8,7 @@ from src.apis.uniswapv2 import ConstantProductAmmApi
 from src.util.os import log_debug, log_error, log_info, deep_copy
 
 class SpreadSolverApi(object):
-
+    
     def __init__(self, amms):
         self.__amms = amms
 
@@ -21,18 +21,18 @@ class SpreadSolverApi(object):
         """Print debug info from solution."""
         
         try:
-            log_debug(f"    Surplus: {to_solution(solution['surplus'])}")
-            log_debug(f"    Prior sell price {solution['prior_sell_price']}")
-            log_debug(f"    Market sell price {solution['market_sell_price']}")
-            log_debug(f"    Prior buy price {solution['prior_buy_price']}")
-            log_debug(f"    Market buy price {solution['market_buy_price']}")
-            log_debug(f"    Exec sell amount: {to_solution(solution['amm_exec_sell_amount'])}")
-            log_debug(f"    Exec buy amount: {to_solution(solution['amm_exec_buy_amount'])}")
-            log_debug(f"    Prior sell reserve: {to_solution(solution['prior_sell_token_reserve'])}")
-            log_debug(f"    Initial buy reserve: {to_solution(solution['prior_buy_token_reserve'])}")
-            log_debug(f"    Updated sell reserve: {to_solution(solution['updated_sell_token_reserve'])}")
-            log_debug(f"    Updated buy reserve: {to_solution(solution['updated_buy_token_reserve'])}")
-            log_debug(f"    Can fill: {solution['can_fill']}")
+            log_debug(f"  Surplus: {to_solution(solution['surplus'])}")
+            log_debug(f"  Prior sell price {solution['prior_sell_price']}")
+            log_debug(f"  Market sell price {solution['market_sell_price']}")
+            log_debug(f"  Prior buy price {solution['prior_buy_price']}")
+            log_debug(f"  Market buy price {solution['market_buy_price']}")
+            log_debug(f"  Exec sell amount: {to_solution(solution['amm_exec_sell_amount'])}")
+            log_debug(f"  Exec buy amount: {to_solution(solution['amm_exec_buy_amount'])}")
+            log_debug(f"  Prior sell reserve: {to_solution(solution['prior_sell_token_reserve'])}")
+            log_debug(f"  Initial buy reserve: {to_solution(solution['prior_buy_token_reserve'])}")
+            log_debug(f"  Updated sell reserve: {to_solution(solution['updated_sell_token_reserve'])}")
+            log_debug(f"  Updated buy reserve: {to_solution(solution['updated_buy_token_reserve'])}")
+            log_debug(f"  Can fill: {solution['can_fill']}")
 
         except KeyError as e:
             log_error(f'Could not print data for "{e}"')
@@ -288,40 +288,31 @@ class SpreadSolverApi(object):
 
         b3c_exec_buy = to_solution(simulated_amms['B3C']['amm_exec_buy_amount'])
         b3c_exec_sell = to_solution(simulated_amms['B3C']['amm_exec_sell_amount'])
-        b3c_prior_price = to_solution(simulated_amms['B3C']['prior_buy_price'])
+        b3c_prior_price = simulated_amms['B3C']['prior_buy_price']
         b3c_market_price = simulated_amms['B3C']['market_buy_price']
         b3c_surplus = simulated_amms['B3C']['surplus']
         b3c_buy_reserve = to_solution(simulated_amms['B3C']['prior_buy_token_reserve'])
         b3c_sell_reserve =   to_solution(simulated_amms['B3C']['prior_sell_token_reserve'])
         b3c_limit_price = _calculate_limit_price(b3c_exec_sell, b3c_exec_buy)
 
-        print('ab1_limit_price', ab1_limit_price, ab1_surplus)
-        print('b1c_limit_price', b1c_limit_price, b1c_surplus)
-        print('ab3_limit_price', ab3_limit_price, ab3_surplus)
-        print('b3c_limit_price', b3c_limit_price, b3c_surplus)
+        print('ab1_limit_price', ab1_limit_price, to_solution(ab1_surplus))
+        print('b1c_limit_price', b1c_limit_price, to_solution(b1c_surplus))
+        print('ab3_limit_price', ab3_limit_price, to_solution(ab3_surplus))
+        print('b3c_limit_price', b3c_limit_price, to_solution(b3c_surplus))
         print()
 
+        utility_ab1 = ab1_surplus * ab1_prior_price 
+        utility_b1c = b1c_surplus * b1c_prior_price 
+        utility_ab3 = ab3_surplus * ab3_prior_price 
+        utility_b3c = b3c_surplus * b3c_prior_price 
 
-        def _surplus(exec_buy, exec_sell, limit_price):
-            print(exec_buy, exec_sell, limit_price)
-            return to_decimal(exec_buy) - to_decimal(exec_sell) / limit_price
+        print('utility_ab1', utility_ab1, ab1_prior_price)
+        print('utility_b1c', utility_b1c, b1c_prior_price)
+        print('utility_ab3', utility_ab3, ab3_prior_price)
+        print('utility_b3c', utility_b3c, b3c_prior_price)
 
-        print()
-        print('ab1', _surplus(ab1_exec_buy, ab1_exec_sell, ab1_limit_price) )
-        print('b1c', _surplus(b1c_exec_buy, b1c_exec_sell, b1c_limit_price) )
-        print('ab3', _surplus(ab3_exec_buy, ab3_exec_sell, ab3_limit_price) )
-        print('b3c', _surplus(b3c_exec_buy, b3c_exec_sell, b3c_limit_price) )
-
-        utility_ab1 = ab1_surplus * ab1_market_price 
-        utility_b1c = b1c_surplus * b1c_market_price 
-        utility_ab3 = ab3_surplus * ab3_market_price 
-        utility_b3c = b3c_surplus * b3c_market_price 
-
-        print('utility_ab1', utility_ab1, ab1_surplus, ab1_market_price)
-        print('utility_b1c', utility_b1c, b1c_surplus, b1c_market_price)
-        print('utility_ab3', utility_ab3, ab3_surplus, ab3_market_price)
-        print('utility_b3c', utility_b3c, b3c_surplus, ab3_market_price)
-
+        print(1 - ab1_prior_price / b1c_prior_price)
+        print(1 -ab3_prior_price / b3c_prior_price)
 
 
         return simulated_amms

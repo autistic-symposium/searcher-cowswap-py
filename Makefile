@@ -1,4 +1,4 @@
-.PHONY: clean install install_deps
+.PHONY: clean install install_deps lint
 
 clean:
 	@find . -iname '*.py[co]' -delete
@@ -16,3 +16,6 @@ install:
 
 install_deps:
 	pip3 install -r requirements.txt
+
+lint:
+	tox -e lint
