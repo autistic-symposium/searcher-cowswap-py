@@ -32,7 +32,7 @@ class ConstantProductAmmApi(object):
                  δ    ≤    (b − a * b) / (a + t)    =    (b * t) / (a + t)
         """
 
-        return div((self.__buy_token_reserve  * self.__sell_amount),
+        return div((self.__buy_token_reserve * self.__sell_amount),
                    (self.__sell_token_reserve + self.__sell_amount))
 
     def _get_exec_buy_amount(self) -> Decimal:
@@ -75,7 +75,7 @@ class ConstantProductAmmApi(object):
         """
             Get sell limit order data for a list of reserves.
 
-            In this type of trade, the order would add "sell_token" to the reserve at the 
+            In this type of trade, the order would add "sell_token" to the reserve at the
             value of "sell_amount" and retrieve "buy_token" at a calculated "exec_buy_amount".
             This would have the inverse trade in the amm: the reserve would receive token A
             at the amount "amm_exec_buy_amount" (which matches the order's exec_sell_amount),

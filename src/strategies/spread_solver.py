@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 # strategies/spread_solver.py
-# This class implements a solver for spread arbitrage.
+# This class implements apis for a solver running spread arbitrage.
 
 
 from src.util.strings import to_solution
@@ -421,7 +421,13 @@ class SpreadSolverApi(object):
     ###########################
 
     def solve(self, order) -> dict:
-        """Entry point for this class."""
+        """
+            Entry point for this class.
+            An individual order is passed as an argument in this method,
+            to be solved with the the amms data passed when the class was 
+            instantiated. This decouple orders instances from amms data
+            for the spread strategies implemented in this class.
+        """
 
         amms_solution = {}
         orders_solution = {}
@@ -437,7 +443,7 @@ class SpreadSolverApi(object):
                 this_amms = self._run_two_legs_trade(order, amms_data)
 
             else:
-                log_error(f'No valid reserve or support for"{trade_type}"')
+                log_error(f'No valid reserve or support for "{trade_type}"')
 
             # Format order dict to add results from executed trade.
             this_order = self._to_order_solution(order, this_amms)

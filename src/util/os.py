@@ -75,7 +75,7 @@ def open_json(filepath) -> dict:
         with open(filepath, 'r', encoding='utf-8') as f:
             return json.load(f)
 
-    except (IOError, FileNotFoundError, TypeError, \
+    except (IOError, FileNotFoundError, TypeError,
             json.decoded.jsonValueError) as e:
         exit_with_error(f'Failed to parse: "{filepath}": {e}')
 
@@ -136,5 +136,6 @@ def deep_copy(dict_to_clone) -> dict:
     return copy.deepcopy(dict_to_clone)
 
 def exit_with_error(message) -> None:
+    """Log an error message and halt the program."""
     log_error(message)
     sys.exit(1)
