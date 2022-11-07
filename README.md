@@ -425,10 +425,11 @@ And this solution:
 #### Two-legs limit price trade for multiple execution paths
 
 
+
 <br>
 
 ```
-cowsol -s orders/instance_2.json 
+cowsol -s orders/instance_3.json 
 ```
 
 <br>
@@ -608,6 +609,10 @@ And this solution:
     }
 }
 ```
+
+<br>
+
+Note: the derivation for the optimization equation for this strategy can be seen [here](docs/).
 
 
 <br>
