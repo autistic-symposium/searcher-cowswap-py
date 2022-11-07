@@ -1,0 +1,28 @@
+{
+    "amms": {
+        "AB2": {
+            "sell_token": "B2",
+            "buy_token": "A",
+            "exec_sell_amount": "1818_181818181818181818",
+            "exec_buy_amount": "1000_000000000000000000"
+        },
+        "B2C": {
+            "sell_token": "C",
+            "buy_token": "B2",
+            "exec_sell_amount": "1081_081081081081081081",
+            "exec_buy_amount": "1818_181818181818181818"
+        }
+    },
+    "orders": {
+        "0": {
+            "allow_partial_fill": false,
+            "is_sell_order": true,
+            "buy_amount": "900_000000000000000000",
+            "sell_amount": "1000_000000000000000000",
+            "buy_token": "C",
+            "sell_token": "A",
+            "exec_buy_amount": "1081_081081081081081081",
+            "exec_sell_amount": "1000_000000000000000000"
+        }
+    }
+}

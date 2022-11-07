@@ -1,0 +1,20 @@
+{
+    "orders": {
+        "0": {
+            "sell_token": "A",
+            "buy_token": "C",
+            "sell_amount": "1000_000000000000000000",
+            "buy_amount": "900_000000000000000000",
+            "allow_partial_fill": false,
+            "is_sell_order": true
+        }
+    },
+    "amms": {
+        "AC": {
+            "reserves": {
+                "A": "10000_000000000000000000",
+                "C": "10000_000000000000000000"
+            }
+        }
+    }
+}

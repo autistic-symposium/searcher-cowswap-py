@@ -1,0 +1,26 @@
+{
+    "amms": {
+        "AC": {
+            "execution": [
+                {
+                    "buy_token": "A",
+                    "exec_buy_amount": "1000000000000000000000",
+                    "exec_sell_amount": "909090909090909090909",
+                    "sell_token": "C"
+                }
+            ]
+        }
+    },
+    "orders": {
+        "0": {
+            "allow_partial_fill": false,
+            "buy_amount": "900000000000000000000",
+            "buy_token": "C",
+            "exec_buy_amount": "909090909090909090909",
+            "exec_sell_amount": "1000000000000000000000",
+            "is_sell_order": true,
+            "sell_amount": "1000000000000000000000",
+            "sell_token": "A"
+        }
+    }
+}
