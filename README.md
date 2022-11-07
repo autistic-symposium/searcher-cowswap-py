@@ -21,7 +21,7 @@
 
 * One-leg limit price trade.
     - In this type of order (`orders/instance_1.json`), we have a limit price and one reserve (`A -> C`), so it's a straightforward solution.
-* Two-legs limit price trade for a single execution paths.
+* Two-legs limit price trade for a single execution path.
     - In this type of order (`orders/instance_2.json`), we have a two-legs trade (`A -> B -> C`) but with only one option for each leg, so we simply walk the legs without the need for optimization.
 * Two-legs limit price trade for multiple execution paths.
     - In this type of order (`orders/instance_3.json`), we have a two-legs trade (`A -> B -> C`) but with multiple pool options for each leg (`B1`, `B2`, `B3`, etc), so we complete the order by dividing the order through multiple paths to optimize for total surplus.
@@ -300,7 +300,7 @@ Note:
 
 <br>
 
-#### Two-legs limit price trade for a single execution paths
+#### Two-legs limit price trade for a single execution path
 
 ```
 cowsol -s orders/instance_2.json 
@@ -613,6 +613,7 @@ And this solution:
 
 
 * Add support for more than two legs.
+* Add support for more than two pools in two-legs trade.
 * Add multiple path graph weighting and cyclic arbitrage detection using the Bellman-Ford algorithm, so that we can optimize by multiple paths without necessarily dividing the order through them. This would allow obtaining arbitrage profit through finding profitable negative cycles (*e.g.*, `A -> B -> C -> D -> A`).
 
 
