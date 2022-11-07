@@ -26,16 +26,16 @@ class OrdersApi(object):
         return self.__orders
 
     @property
-    def orders_data(self) -> dict:
+    def orders_data(self) -> None:
         """Pretty print full orders data."""
 
-        return pprint(self.__orders)
+        pprint(self.__orders)
 
     @property
-    def amms_data(self) -> dict:
+    def amms_data(self) -> None:
         """Pretty print full amms data."""
-
-        return pprint(self.__amms)
+        
+        pprint(self.__amms)
 
     ###############################
     #     Private methods         #
@@ -52,6 +52,7 @@ class OrdersApi(object):
 
         except KeyError as e:
             log_error(f'Could not load order instance(no amms or orders key): {e}')
+            exit_with_error()
 
     ###############################
     #     Static methods          #
@@ -65,8 +66,8 @@ class OrdersApi(object):
             return {
                     'allow_partial_fill': order['allow_partial_fill'],
                     'is_sell_order': order['is_sell_order'],
-                    'buy_amount': to_decimal_str(order['buy_amount']),
-                    'sell_amount': to_decimal_str(order['sell_amount']),
+                    'buy_amount': int(to_decimal_str(order['buy_amount'])),
+                    'sell_amount': int(to_decimal_str(order['sell_amount'])),
                     'buy_token': order['buy_token'],
                     'sell_token': order['sell_token'],
                     'order_num': order_num
@@ -89,11 +90,11 @@ class OrdersApi(object):
             sell_token = order['sell_token']
         except KeyError as e:
             log_error(f'Order has no data for buy/sell token: {e}')
-            return
+            exit_with_error()
 
         if buy_token == 0 or sell_token == 0:
             log_error('Order invalid: either sell or buy token is zero.')
-            return
+            exit_with_error()
 
         # Parse amms in terms of number of trading legs and pools.
         trade_path = sell_token + buy_token
@@ -161,7 +162,7 @@ class OrdersApi(object):
                             log_error(f'Could not extract order data for {pool}.')
 
                     else:
-                        log_error('COWSOL has no strategy for 3-legs trade or higher (yet)')
+                        log_error('3-legs trade or higher are not available: {e}')
 
             except KeyError as e:
                 log_error(f'Input data is ill-formatted: {e}')
