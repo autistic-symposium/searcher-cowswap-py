@@ -315,7 +315,9 @@ class SpreadSolverApi(object):
         if len(amms) == 1:
             this_amms = self._run_two_leg_trade(this_order, amms, simulation=False)
         
-            pprint(this_order)
+            pprint(this_amms)
+            import sys
+            sys.exit()
 
         elif len(amms) > 1:
             # Solve for two-legs trade with multiple execution pools.
@@ -340,8 +342,6 @@ class SpreadSolverApi(object):
             exec_buy_amount_t1, exec_buy_amount_t2 = self._optimize_for_2_legs_2_pools(amms1, amms2, this_order)
 
 
-            
-
 
             order1 = deep_copy(this_order)
             order1['sell_amount'] = exec_buy_amount_t1
@@ -350,28 +350,55 @@ class SpreadSolverApi(object):
 
             #amms1 = {midtoken1: amms1}
             #amms2 = {midtoken2: amms2}
-            print(amms1)
 
+            # solution_first_leg_path1
+            first_leg_order_path1 = deep_copy(order1)
+            first_leg_path1 = ConstantProductAmmApi(first_leg_order_path1, amms1['first_leg'])
+            solution_first_leg_path1 = first_leg_path1.solve()
 
-            first_leg_trade = ConstantProductAmmApi(order1, amms1['first_leg'])
-            solution_first_leg = first_leg_trade.solve()
-
-            second_leg_order = deep_copy(order1)
-            second_leg_order['sell_amount'] = solution_first_leg['amm_exec_buy_amount']
-            second_leg_order['buy_amount'] = solution_first_leg['amm_exec_sell_amount']
-
+            # solution_second_leg_path1
+            second_leg_order_path1 = deep_copy(order1)
+            second_leg_order_path1['sell_amount'] = solution_first_leg_path1['amm_exec_buy_amount']
+            second_leg_order_path1['buy_amount'] = solution_first_leg_path1['amm_exec_sell_amount']
             
-            second_leg_trade = ConstantProductAmmApi(second_leg_order, amms1['second_leg'])
-            solution_second_leg = second_leg_trade.solve()
+            second_leg_path1 = ConstantProductAmmApi(second_leg_order_path1, amms1['second_leg'])
+            solution_second_leg_path1 = second_leg_path1.solve()
 
-            #this_amms1 = self._run_two_leg_trade(order1, amms1, simulation=False)
-            #this_amms2 = self._run_two_leg_trade(order2, amms2, simulation=False)
+            # solution_first_leg_path2
+            first_leg_order_path2 = deep_copy(order2)
+            first_leg_path2 = ConstantProductAmmApi(first_leg_order_path2, amms2['first_leg'])
+            solution_first_leg_path2 = first_leg_path2.solve()
 
-            pprint(solution_second_leg)
+            # solution_second_leg_path2
+            second_leg_order_path2 = deep_copy(order2)
+            second_leg_order_path2['sell_amount'] = solution_first_leg_path2['amm_exec_buy_amount']
+            second_leg_order_path2['buy_amount'] = solution_first_leg_path2['amm_exec_sell_amount']
+            
+            second_leg_trade = ConstantProductAmmApi(second_leg_order_path2, amms2['second_leg'])
+            solution_second_leg_path2 = second_leg_trade.solve()
+
+            ####
+            solution_first_leg_path1['amm_buy_token'] = amms1['first_leg']['buy_token']
+            solution_first_leg_path1['amm_sell_token'] = amms1['first_leg']['sell_token']
+
+            solution_second_leg_path1['amm_buy_token'] = amms1['second_leg']['buy_token']
+            solution_second_leg_path1['amm_sell_token'] = amms1['second_leg']['sell_token']
 
 
-            import sys
-            sys.exit()
+            solution_first_leg_path2['amm_buy_token'] = amms2['first_leg']['buy_token']
+            solution_first_leg_path2['amm_sell_token'] = amms2['first_leg']['sell_token']
+
+            solution_second_leg_path2['amm_buy_token'] = amms2['second_leg']['buy_token']
+            solution_second_leg_path2['amm_sell_token'] = amms2['second_leg']['sell_token']
+
+
+            this_amms = {
+                key1: solution_first_leg_path1,
+                key2: solution_second_leg_path1,
+                key3: solution_first_leg_path2,
+                key4: solution_second_leg_path2
+
+            }
 
 
         # Save the final amms solution to a suitable format.
