@@ -127,7 +127,7 @@ make install_deps
 
 
 ```sh
-cp .env.sample .env
+cp .env.example .env
 vim .env
 ```
 
