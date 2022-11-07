@@ -2,10 +2,11 @@
 # strategies/spread_solver.py
 # This class implements a solver for spread arbitrage.
 
+
 from src.util.strings import to_solution
 from src.util.arithmetics import to_decimal, div
 from src.apis.uniswapv2 import ConstantProductAmmApi
-from src.util.os import log_debug, log_error, log_info, deep_copy
+from src.util.os import log_debug, log_error, log_info, deep_copy, exit_with_error
 
 
 class SpreadSolverApi(object):
@@ -151,7 +152,7 @@ class SpreadSolverApi(object):
     #     Private methods: Two-legs strategy  #
     ###########################################
 
-    def _run_two_leg_trade(self, this_order, amms, simulation=False) -> dict:
+    def _run_two_leg_trade_one_path(self, this_order, amms, simulation=False) -> dict:
         """
             Perform a multi-path simulation for a two-legs trade,
             i.e. A -> C through A -> Ti -> C, where i E [1, 2+].
@@ -224,8 +225,8 @@ class SpreadSolverApi(object):
             # calculate surplus (if it's negative, trade is not fillable so skip)
             total_surplus = solution_first_leg['surplus'] + solution_second_leg['surplus']
             self.__supplus_ranking[this_order['order_num']][amm_token] = total_surplus
-            #if total_surplus < 0:
-            #    continue
+            if total_surplus < 0:
+                continue
 
             if not simulation:
                 # Print results
@@ -285,44 +286,21 @@ class SpreadSolverApi(object):
                     (ab3_sell_reserve + (order_sell_amount - ab1_buy_amount))) - \
                     order_sell_amount / limit_price_cte
 
-        print(surplus_equation(ab1_buy_amount))
         from src.util.arithmetics import nelder_mead_simplex_optimization
 
         boundary = (ab1_buy_amount_min, ab1_buy_amount_max)
         solution = nelder_mead_simplex_optimization(surplus_equation, boundary)
-        print(int(to_decimal(solution)))
-        print(int(to_decimal(order_sell_amount - solution)))
 
         exec_buy_amount_t1 = int(to_decimal(solution))
         exec_buy_amount_t2 = int(to_decimal(order_sell_amount - solution))
 
-        #amm1['first_leg']['exec_buy_amount'] = int(to_decimal(solution))
-        #amm2['first_leg']['exec_buy_amount'] = int(to_decimal(order_sell_amount - solution))
-
-
         return exec_buy_amount_t1, exec_buy_amount_t2
       
+    def _run_two_leg_trade_multiple_paths(self, this_order, amms) -> dict:
 
-    def _run_two_legs_trade(self, this_order, amms) -> dict:
-        """
-            Run a two-legs simulation trade for an order to a list of pools,
-            for either one or multiple execution paths, then calculate the
-            most optimal path for this trade, returning the final solution.
-        """
-        from src.util.strings import pprint
-        solution = {}
-
-        if len(amms) == 1:
-            this_amms = self._run_two_leg_trade(this_order, amms, simulation=False)
-        
-            pprint(this_amms)
-            import sys
-            sys.exit()
-
-        elif len(amms) > 1:
             # Solve for two-legs trade with multiple execution pools.
             log_debug('Using the best two execution simulations by surplus yield.')            
-            _ = self._run_two_leg_trade(this_order, amms, simulation=True)
+            _ = self._run_two_leg_trade_one_path(this_order, amms, simulation=True)
 
             suplus_rank = self.__supplus_ranking[this_order['order_num']]
             sorted_ = [k for k, v in sorted(suplus_rank.items(), key=lambda item: item[1], reverse=True)]
@@ -409,7 +387,7 @@ class SpreadSolverApi(object):
 
             self._print_total_order_surplus(total_surplus)
 
-            this_amms = {
+            return  {
                 key1: solution_first_leg_path1,
                 key2: solution_second_leg_path1,
                 key3: solution_first_leg_path2,
@@ -418,7 +396,25 @@ class SpreadSolverApi(object):
             }
 
 
+
+
+    def _run_two_legs_trade(self, this_order, amms) -> dict:
+        """
+            Run a two-legs simulation trade for an order to a list of pools,
+            for either one or multiple execution paths, then calculate the
+            most optimal path for this trade, returning the final solution.
+        """
+
+        # Run the appropriate strategy.
+        if len(amms) == 1:
+            this_amms = self._run_two_leg_trade_one_path(this_order, amms)
+        elif len(amms) > 1:
+            this_amms = self._run_two_leg_trade_multiple_paths(this_order, amms)
+        else:
+            log_error('This order has no AMMs data. Exiting.')
+            exit_with_error()
         # Save the final amms solution to a suitable format.
+        solution = {}
         for amm_name, amm_data in this_amms.items():
             solution.update(
                 {amm_name:
