@@ -62,14 +62,6 @@ class ConstantProductAmmApi(object):
         return div(pair_token_balance, token_balance)
 
     @staticmethod
-    def _calculate_surplus(exec_amount, amount) -> Decimal:
-        """
-            Calculate the surplus of an executed order.
-        """
-
-        return exec_amount - amount
-
-    @staticmethod
     def _calculate_exchange_rate(sell_reserve, buy_reserve) -> Decimal:
         """Calculate the exchange rate between a pair of tokens."""
 
@@ -78,6 +70,14 @@ class ConstantProductAmmApi(object):
     ###############################
     #     Public methods          #
     ###############################
+
+    @staticmethod
+    def calculate_surplus(exec_amount, amount) -> Decimal:
+        """
+            Calculate the surplus of an executed order.
+        """
+
+        return int(exec_amount - amount)
 
     def trade_sell_order(self) -> dict:
         """
@@ -94,11 +94,11 @@ class ConstantProductAmmApi(object):
         amm_exec_buy_amount = int(self.sell_amount)
         amm_exec_sell_amount = int(self._calculate_exec_sell_amount())
 
+        # Calculate surplus for this sell order
+        surplus = self.calculate_surplus(amm_exec_sell_amount, self.buy_amount)
+
         # Check limit price for amm_exec_sell_ammount
         can_fill = self._can_fill_order(amm_exec_buy_amount, self.sell_amount)
-
-        # Calculate surplus for this sell order
-        surplus = int(self._calculate_surplus(amm_exec_sell_amount, self.buy_amount))
 
         # Get some extra data on the reserve
         prior_sell_token_reserve = int(self.sell_token_reserve)

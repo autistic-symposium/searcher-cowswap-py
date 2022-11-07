@@ -16,7 +16,64 @@ class SpreadSolverApi(object):
 
         self.__amms = amms
         self.__surplus_data = {}
+        self.__order_num = None
         self.__is_sell_order = None
+
+
+    ##################################
+    #     Private methods: Utils     #
+    ##################################
+
+    @staticmethod
+    def _get_total_exec_amount(this_amms, exec_amount_key, final_token) -> tuple:
+        """Add all exec amounts for every leg in the trade."""
+
+        legs_exec_amount = 0
+        for leg_label, leg_data in this_amms.items():
+            if leg_label[-1] == leg_data[final_token]:
+                legs_exec_amount += to_decimal(leg_data[exec_amount_key])
+
+        return legs_exec_amount
+
+    def _to_order_solution(self, order, amms) -> dict:
+        """Format order dict to save as the result solution."""
+
+        order['sell_amount'] = to_solution(order['sell_amount'])
+        order['buy_amount'] = to_solution(order['buy_amount'])
+
+        if self.__is_sell_order:
+            exec_sell_amount = order['sell_amount']
+            exec_buy_amount = self._get_total_exec_amount(amms,
+                                             'exec_sell_amount', 'sell_token')
+
+        else:
+            exec_buy_amount = order['buy_amount']
+            exec_sell_amount = self._get_total_exec_amount(amms,
+                                            'exec_buy_amount', 'buy_token')
+
+        order['exec_buy_amount'] = to_solution(exec_buy_amount)
+        order['exec_sell_amount'] = to_solution(exec_sell_amount)
+
+        total_surplus = to_solution(int(exec_buy_amount) - int(order['buy_amount']))
+        log_info(f'TOTAL SURPLUS: {total_surplus}')
+
+        del order['order_num']
+
+        return {self.__order_num: order}
+
+    def _set_order_type(self, order) -> None:
+        """Set the type of order (sell, buy, etc.)."""
+        try:
+            self.__is_sell_order = bool(order['is_sell_order'])
+            self.__order_num = order['order_num']
+            self.__surplus_data[self.__order_num ] = {}
+        except KeyError as e:
+            log_error('Order is ill-formated: {e}')
+    
+        if self.__is_sell_order:
+            log_info(f'Order {self.__order_num} is a sell order.')
+        else:
+            log_info('Order {self.__order_num} is a buy order.')
 
 
     ###########################################
@@ -131,7 +188,7 @@ class SpreadSolverApi(object):
         self._print_extra_info(solution)
 
         # Save order's surplus
-        self.__surplus_data[order['order_num']][leg_label] = solution['trade_surplus']
+        self.__surplus_data[self.__order_num][leg_label] = solution['trade_surplus']
 
         # Save results
         # Note: amms exec amount has reverse labels wrt order (see uniswapv2.py).
@@ -239,7 +296,7 @@ class SpreadSolverApi(object):
             solution_second_leg = second_leg_trade.solve()
 
             # Save order's surplus
-            self.__surplus_data[order['order_num']][amm_token] = \
+            self.__surplus_data[self.__order_num][amm_token] = \
                         solution_first_leg['trade_surplus'] + solution_second_leg['trade_surplus']
             if simulation:
                 continue
@@ -306,14 +363,13 @@ class SpreadSolverApi(object):
     def _get_surplus_rank(self, order) -> tuple:
         """Return best paths by generated surplus for an order."""
         
-        surplus_ranked = [pool for pool,_ in sorted(self.__surplus_data[order['order_num']].items(), 
+        surplus_ranked = [pool for pool,_ in sorted(self.__surplus_data[self.__order_num].items(), 
                                                             key=lambda item: item[1], reverse=True)]
         try:
             return surplus_ranked[0], surplus_ranked[1]
         except ValueError as e:
             log_error('Surplus rank could not be calculated: {e}')
             exit_with_error()
-        
 
     def _optimize_for_2_legs_2_pools(self, path1, path2, order) -> dict:
         """ 
@@ -365,49 +421,6 @@ class SpreadSolverApi(object):
         return exec_amount_t1, boundary_max - exec_amount_t1
 
 
-    ##################################
-    #     Private methods: Utils     #
-    ##################################
-
-    @staticmethod
-    def _get_total_exec_amount(this_amms, exec_amount_key, final_token) -> tuple:
-        """Add all exec amounts for every leg in the trade."""
-
-        legs_exec_amount = 0
-        for leg_label, leg_data in this_amms.items():
-            if leg_label[-1] == leg_data[final_token]:
-                legs_exec_amount += to_decimal(leg_data[exec_amount_key])
-
-        return legs_exec_amount
-
-    def _to_order_solution(self, order, amms) -> dict:
-        """Format order dict to save as the result solution."""
-
-        order['sell_amount'] = to_solution(order['sell_amount'])
-        order['buy_amount'] = to_solution(order['buy_amount'])
-
-        order_num = order['order_num']
-
-        if self.__is_sell_order:
-            exec_sell_amount = order['sell_amount']
-            exec_buy_amount = self._get_total_exec_amount(amms,
-                                             'exec_sell_amount', 'sell_token')
-
-        else:
-            exec_buy_amount = order['buy_amount']
-            exec_sell_amount = self._get_total_exec_amount(amms,
-                                            'exec_buy_amount', 'buy_token')
-
-        order['exec_buy_amount'] = to_solution(exec_buy_amount)
-        order['exec_sell_amount'] = to_solution(exec_sell_amount)
-
-        total_surplus = to_solution(int(exec_buy_amount) - int(order['buy_amount']))
-        log_info(f'TOTAL SURPLUS: {total_surplus}')
-
-        del order['order_num']
-
-        return {order_num: order}
-
     ###########################
     #   Public methods        #
     ###########################
@@ -417,8 +430,7 @@ class SpreadSolverApi(object):
 
         amms_solution = {}
         orders_solution = {}
-        self.__surplus_data[order['order_num']] = {}
-        self.__is_sell_order = bool(order['is_sell_order'])
+        self._set_order_type(order)
 
         for trade_type, amms_data in self.__amms.items():
             this_amms = {}
