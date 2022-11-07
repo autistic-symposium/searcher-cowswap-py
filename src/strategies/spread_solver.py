@@ -68,7 +68,7 @@ class SpreadSolverApi(object):
             self.__order_num = order['order_num']
             self.__surplus_data[self.__order_num ] = {}
         except KeyError as e:
-            log_error('Order is ill-formated: {e}')
+            exit_with_error(f'Order is ill-formated: {e}')
     
         if self.__is_sell_order:
             log_info(f'Order {self.__order_num} is a sell order.')
@@ -84,21 +84,18 @@ class SpreadSolverApi(object):
     def _print_extra_info(solution) -> None:
         """Print debug info from solution."""
         
-        try:
-            log_debug(f"  Prior sell reserve: {to_solution(solution['prior_sell_token_reserve'])}")
-            log_debug(f"  Prior buy reserve: {to_solution(solution['prior_buy_token_reserve'])}")
-            log_debug(f"  Prior sell price {solution['prior_sell_price']}")
-            log_debug(f"  Prior buy price {solution['prior_buy_price']}")
-            log_debug(f"  AMM exec sell amount: {to_solution(solution['amm_exec_sell_amount'])}")
-            log_debug(f"  AMM exec buy amount: {to_solution(solution['amm_exec_buy_amount'])}")
-            log_debug(f"  Updated sell reserve: {to_solution(solution['updated_sell_token_reserve'])}")
-            log_debug(f"  Updated buy reserve: {to_solution(solution['updated_buy_token_reserve'])}")
-            log_debug(f"  Market sell price {solution['market_sell_price']}")
-            log_debug(f"  Market buy price {solution['market_buy_price']}")
-            log_debug(f"  Can fill: {solution['can_fill']}")
+        log_debug(f"  Prior sell reserve: {to_solution(solution['prior_sell_token_reserve'])}")
+        log_debug(f"  Prior buy reserve: {to_solution(solution['prior_buy_token_reserve'])}")
+        log_debug(f"  Prior sell price {solution['prior_sell_price']}")
+        log_debug(f"  Prior buy price {solution['prior_buy_price']}")
+        log_debug(f"  AMM exec sell amount: {to_solution(solution['amm_exec_sell_amount'])}")
+        log_debug(f"  AMM exec buy amount: {to_solution(solution['amm_exec_buy_amount'])}")
+        log_debug(f"  Updated sell reserve: {to_solution(solution['updated_sell_token_reserve'])}")
+        log_debug(f"  Updated buy reserve: {to_solution(solution['updated_buy_token_reserve'])}")
+        log_debug(f"  Market sell price {solution['market_sell_price']}")
+        log_debug(f"  Market buy price {solution['market_buy_price']}")
+        log_debug(f"  Can fill: {solution['can_fill']}")
 
-        except KeyError as e:
-            log_error(f'Could not print data for "{e}"')
 
     @staticmethod
     def _print_initial_info_one_leg(sell_amount, sell_token, amm_sell_reserve,
@@ -225,8 +222,7 @@ class SpreadSolverApi(object):
         elif len(amms) > 1:
             this_amms = self._run_two_leg_trade_multiple_paths(order, amms)
         else:
-            log_error('This order has no AMMs data. Exiting.')
-            exit_with_error()
+            exit_with_error('This order has no AMMs data. Exiting.')
 
         solution = {}
         for amm_name, amm_data in this_amms.items():
@@ -368,8 +364,7 @@ class SpreadSolverApi(object):
         try:
             return surplus_ranked[0], surplus_ranked[1]
         except ValueError as e:
-            log_error('Surplus rank could not be calculated: {e}')
-            exit_with_error()
+            exit_with_error(f'Surplus rank could not be calculated: {e}')
 
     def _optimize_for_2_legs_2_pools(self, path1, path2, order) -> dict:
         """ 
