@@ -30,10 +30,11 @@ def to_solution(value) -> str:
     return to_wei_str(to_decimal_str(value))
 
 
-def pprint(data) -> None:
+def pprint(data, indent=None) -> None:
     """Print dicts and data in a suitable format"""
 
-    pp = PrettyPrinter(indent=4)
     print()
+    indent = indent or 4
+    pp = PrettyPrinter(indent=indent)
     pp.pprint(data)
     print()

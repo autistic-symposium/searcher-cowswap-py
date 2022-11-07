@@ -7,7 +7,7 @@ from decimal import Decimal
 from src.util.arithmetics import div, to_decimal
 
 
-class ConstantProductAmmApi(object):
+class ConstantProductAmmApi():
 
     def __init__(self, order, amms):
 
@@ -32,7 +32,7 @@ class ConstantProductAmmApi(object):
                  δ    ≤    (b − a * b) / (a + t)    =    (b * t) / (a + t)
         """
 
-        return div((self.__buy_token_reserve  * self.__sell_amount),
+        return div((self.__buy_token_reserve * self.__sell_amount),
                    (self.__sell_token_reserve + self.__sell_amount))
 
     def _get_exec_buy_amount(self) -> Decimal:
@@ -43,8 +43,7 @@ class ConstantProductAmmApi(object):
 
         if self.__allow_partial_fill:
             return exec_amount <= limit_amount
-        else:
-            return exec_amount == limit_amount
+        return exec_amount == limit_amount
 
 
     ###############################
@@ -75,7 +74,7 @@ class ConstantProductAmmApi(object):
         """
             Get sell limit order data for a list of reserves.
 
-            In this type of trade, the order would add "sell_token" to the reserve at the 
+            In this type of trade, the order would add "sell_token" to the reserve at the
             value of "sell_amount" and retrieve "buy_token" at a calculated "exec_buy_amount".
             This would have the inverse trade in the amm: the reserve would receive token A
             at the amount "amm_exec_buy_amount" (which matches the order's exec_sell_amount),
@@ -120,11 +119,11 @@ class ConstantProductAmmApi(object):
                 'prior_buy_token_reserve': prior_buy_token_reserve,
                 'amm_exec_sell_amount': amm_exec_buy_amount,
                 'amm_exec_buy_amount': amm_exec_sell_amount,
-                'updated_sell_token_reserve': updated_sell_token_reserve,
                 'can_fill': can_fill
         }
 
     def trade_buy_order(self) -> dict:
+        """Get buy limit order data for a list of reserves."""
         raise NotImplementedError
 
     def solve(self) -> dict:
@@ -132,5 +131,4 @@ class ConstantProductAmmApi(object):
 
         if self.__is_sell_order:
             return self.trade_sell_order()
-        else:
-            return self.trade_buy_order()
+        return self.trade_buy_order()
