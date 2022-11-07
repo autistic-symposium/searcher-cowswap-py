@@ -53,30 +53,29 @@ def load_config() -> dict:
 def log_error(string) -> None:
     """Print STDOUT error using the logging library."""
 
-    logging.error(f'🚨 {string}')
+    logging.error('🚨 %s', string)
 
 
 def log_info(string) -> None:
     """Print STDOUT info using the logging library."""
 
-    logging.info(f'✅ {string}')
+    logging.info('✅ %s', string)
 
 
 def log_debug(string) -> None:
     """Print STDOUT debug using the logging library."""
 
-    logging.debug(f'🟨 {string}')
+    logging.debug('🟨 %s', string)
 
 
 def open_json(filepath) -> dict:
     """Load and parse a file."""
 
     try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            return json.load(f)
+        with open(filepath, 'r', encoding='utf-8') as infile:
+            return json.load(infile)
 
-    except (IOError, FileNotFoundError, TypeError,
-            json.decoded.jsonValueError) as e:
+    except (IOError, FileNotFoundError, TypeError) as e:
         exit_with_error(f'Failed to parse: "{filepath}": {e}')
 
 
@@ -96,7 +95,7 @@ def save_output(destination, data) -> None:
     """Save data from memory to a destination in disk."""
 
     try:
-        with open(destination, 'w') as outfile:
+        with open(destination, 'w', encoding='utf-8') as outfile:
             json.dump(data, outfile, indent=4)
 
     except (IOError, TypeError) as e:
@@ -134,6 +133,7 @@ def deep_copy(dict_to_clone) -> dict:
     """Deep copy (not reference copy) to a dict."""
 
     return copy.deepcopy(dict_to_clone)
+
 
 def exit_with_error(message) -> None:
     """Log an error message and halt the program."""

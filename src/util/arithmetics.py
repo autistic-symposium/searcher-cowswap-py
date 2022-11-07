@@ -47,6 +47,6 @@ def nelder_mead_simplex_optimization(equation, boundary_max, x0=None) -> float:
 
     try:
         return int(to_decimal(solution_for_max[0]))
-    except ValueError as e:
+    except (ValueError, KeyError) as e:
         log_error(f'Could not find a optimization solution: {e}. Returning 0.')
         return 0

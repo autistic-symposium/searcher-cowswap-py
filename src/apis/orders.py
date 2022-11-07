@@ -6,7 +6,7 @@ from src.util.strings import to_decimal_str, pprint
 from src.util.os import open_json, log_error, exit_with_error
 
 
-class OrdersApi(object):
+class OrdersApi():
 
     def __init__(self, input_file):
 
@@ -124,7 +124,7 @@ class OrdersApi(object):
                     if len(pool) == 3:
                         trade_type = 'two_legs_trade'
 
-                        if trade_type not in this_amms.keys():
+                        if trade_type not in this_amms:
                             this_amms[trade_type] = {}
 
                         # First leg
