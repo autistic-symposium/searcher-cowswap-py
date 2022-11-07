@@ -642,6 +642,7 @@ Note: the derivation for the optimization equation for this strategy can be seen
 ### Code improvement
 
 * Add support for concurrency (`async`), so tasks could run in parallel adding temporal advantage to the solver.
+* Benchmark and possibly refactor `_run_two_leg_trade_multiple_paths()`.
 * Implement support for AMM fees when calculating surplus.
 * Add an actual execution class (through CoW server or directly to the blockchains).
 * Finish implementing end-to-end BUY limit orders.
