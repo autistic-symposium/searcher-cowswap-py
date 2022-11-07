@@ -290,11 +290,12 @@ class SpreadSolverApi(object):
 
             solution = {}
             def run_path(exec_amount, this_amms, order):
-                if bool(order['is_sell_order']):
-                    order['sell_amount'] = exec_amount
+                this_order = deep_copy(order)
+                if bool(this_order['is_sell_order']):
+                    this_order['sell_amount'] = exec_amount
                 else: 
-                    order['buy_amount'] = exec_amount
-                this_solution = self._run_two_leg_trade_one_path(order, this_amms)
+                    this_order['buy_amount'] = exec_amount
+                this_solution = self._run_two_leg_trade_one_path(this_order, this_amms)
                 solution.update(this_solution)
 
             run_path(exec_amount_t1, {order['sell_token'] + path1: amms[path1]}, order)

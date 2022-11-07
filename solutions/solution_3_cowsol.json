@@ -30,11 +30,11 @@
             "allow_partial_fill": false,
             "is_sell_order": true,
             "buy_amount": "900_000000000000000000",
-            "sell_amount": "710_926294326759522304",
+            "sell_amount": "1000_000000000000000000",
             "buy_token": "C",
             "sell_token": "A",
             "exec_buy_amount": "1301_146505257211110752",
-            "exec_sell_amount": "710_926294326759522304"
+            "exec_sell_amount": "1000_000000000000000000"
         }
     }
 }
