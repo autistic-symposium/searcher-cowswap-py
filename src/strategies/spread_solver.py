@@ -285,49 +285,21 @@ class SpreadSolverApi(object):
             log_debug('Using the best two execution simulations by surplus yield.')  
             self._run_two_leg_trade_one_path(order, amms, simulation=True)
             path1, path2 = self._get_surplus_rank(order)
-            
-            # Optimize for two paths:
-            order_path1 = deep_copy(order)
-            order_path2 = deep_copy(order)
 
-            first_path_label = order_path1['sell_token'] + path1
-            second_path_label = order_path2['sell_token'] + path2
-
-            amms_path1 = amms[path1]
-            amms_path2 = amms[path2]
-
-
-            exec_amount_t1, exec_amount_t2 = self._optimize_for_2_legs_2_pools(amms_path1, amms_path2, order)
-
-            if bool(order['is_sell_order']):
-                order_path1['sell_amount'] = exec_amount_t1
-                order_path2['sell_amount'] = exec_amount_t2
-            else: 
-                order_path1['buy_amount'] = exec_amount_t1
-                order_path2['buy_amount'] = exec_amount_t2
-            
-            this_amms_path1 = {first_path_label: amms_path1}
-            this_amms_path2 = {second_path_label: amms_path2}
-
-            # Run trade for both paths.
-            solution_amms1 = self._run_two_leg_trade_one_path(order_path1, this_amms_path1)
-            solution_amms2 = self._run_two_leg_trade_one_path(order_path2, this_amms_path2)
+            # Optimize for these two paths.
+            exec_amount_t1, exec_amount_t2 = self._optimize_for_2_legs_2_pools(amms[path1], amms[path2], order)
 
             solution = {}
-            solution.update(solution_amms1)
-            solution.update(solution_amms2)
+            def run_path(exec_amount, this_amms, order):
+                if bool(order['is_sell_order']):
+                    order['sell_amount'] = exec_amount
+                else: 
+                    order['buy_amount'] = exec_amount
+                this_solution = self._run_two_leg_trade_one_path(order, this_amms)
+                solution.update(this_solution)
 
-            '''
-            log_info('EXECUTION PATH1')
-            log_info('1️⃣ FIRST LEG trade overview:')
-            self._print_extra_info(solution_first_leg_path1)
-            log_info('1️⃣ SECOND LEG trade overview:')
-            self._print_extra_info(solution_second_leg_path1)
-            log_info('EXECUTION PATH2')
-            log_info('2️⃣ FIRST LEG trade overview:')
-            self._print_extra_info(solution_first_leg_path2)
-            log_info('2️⃣ SECOND LEG trade overview:')
-            '''
+            run_path(exec_amount_t1, {order['sell_token'] + path1: amms[path1]}, order)
+            run_path(exec_amount_t2, {order['sell_token'] + path2: amms[path2]}, order)
 
             return solution   
 
@@ -343,15 +315,15 @@ class SpreadSolverApi(object):
             exit_with_error()
         
 
-    def _optimize_for_2_legs_2_pools(self, path1, path2, this_order) -> dict:
+    def _optimize_for_2_legs_2_pools(self, path1, path2, order) -> dict:
         """ 
             Optimize a two-legs order for two pool paths,
             i.e., A -> C through A -> T1 -> C AND A -> T2 -> C.
         """
 
         # Set constants.
-        order_sell_amount = int(this_order['sell_amount'])  
-        order_buy_amount = int(this_order['buy_amount'])  
+        order_sell_amount = int(order['sell_amount'])  
+        order_buy_amount = int(order['buy_amount'])  
         limit_price = int(div(order_sell_amount, order_buy_amount))
 
         at1_sell_reserve = int(path1['first_leg']['sell_reserve'])       
@@ -366,7 +338,7 @@ class SpreadSolverApi(object):
 
         # Set boundary.
         boundary_max = order_sell_amount \
-                        if bool(this_order['is_sell_order']) else order_buy_amount    
+                        if bool(order['is_sell_order']) else order_buy_amount    
 
         def __surplus_equation(at1_buy_amount):
             """
