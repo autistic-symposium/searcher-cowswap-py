@@ -57,7 +57,9 @@ class SpreadSolverApi(object):
         total_surplus = to_solution(int(exec_buy_amount) - int(order['buy_amount']))
         log_info(f'TOTAL SURPLUS: {total_surplus}')
 
-        return order
+        del order['order_num']
+
+        return {self.__order_num: order}
 
     def _set_order_type(self, order) -> None:
         """Set the type of order (sell, buy, etc.)."""

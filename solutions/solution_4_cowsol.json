@@ -3,37 +3,38 @@
         "AB3": {
             "sell_token": "B3",
             "buy_token": "A",
-            "exec_sell_amount": "2816_156205125948429502",
-            "exec_buy_amount": "1548_713372647762690048"
+            "exec_sell_amount": "1095_921062321970951267",
+            "exec_buy_amount": "550_601243972869292032"
         },
         "B3C": {
             "sell_token": "C",
             "buy_token": "B3",
-            "exec_sell_amount": "1580_675524339925975362",
-            "exec_buy_amount": "2816_156205125948429502"
+            "exec_sell_amount": "680_868810227549159817",
+            "exec_buy_amount": "1095_921062321970951267"
         },
         "AB2": {
             "sell_token": "B2",
             "buy_token": "A",
-            "exec_sell_amount": "2534_713651976421311241",
-            "exec_buy_amount": "1451_286627352237309950"
+            "exec_sell_amount": "860_142801551947767988",
+            "exec_buy_amount": "449_398756027130707968"
         },
         "B2C": {
             "sell_token": "C",
             "buy_token": "B2",
-            "exec_sell_amount": "1445_540373389970717439",
-            "exec_buy_amount": "2534_713651976421311241"
+            "exec_sell_amount": "542_329796341922606329",
+            "exec_buy_amount": "860_142801551947767988"
         }
     },
     "orders": {
-        "allow_partial_fill": false,
-        "is_sell_order": true,
-        "buy_amount": "1666_666666666666666666",
-        "sell_amount": "2999_999999999999999998",
-        "buy_token": "C",
-        "sell_token": "A",
-        "order_num": "0",
-        "exec_buy_amount": "3026_215897729896692801",
-        "exec_sell_amount": "2999_999999999999999998"
+        "0": {
+            "allow_partial_fill": false,
+            "is_sell_order": true,
+            "buy_amount": "900_000000000000000000",
+            "sell_amount": "1000_000000000000000000",
+            "buy_token": "C",
+            "sell_token": "A",
+            "exec_buy_amount": "1223_198606569471766146",
+            "exec_sell_amount": "1000_000000000000000000"
+        }
     }
 }
