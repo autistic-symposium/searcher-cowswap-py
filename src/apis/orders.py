@@ -51,8 +51,7 @@ class OrdersApi(object):
             self.__amms = order_instance['amms']
 
         except KeyError as e:
-            log_error(f'Could not load order instance(no amms or orders key): {e}')
-            exit_with_error()
+            exit_with_error(f'Could not load orders (no amms or orders key): {e}')
 
     ###############################
     #     Static methods          #
@@ -74,8 +73,7 @@ class OrdersApi(object):
                 }
 
         except KeyError as e:
-            log_error(f'Input order data is ill-formatted: {e}')
-            exit_with_error()
+            exit_with_error(f'Input order data is ill-formatted: {e}')
 
     ###############################
     #     Public methods          #
@@ -89,12 +87,10 @@ class OrdersApi(object):
             buy_token = order['buy_token']
             sell_token = order['sell_token']
         except KeyError as e:
-            log_error(f'Order has no data for buy/sell token: {e}')
-            exit_with_error()
+            exit_with_error(f'Order has no data for buy/sell token: {e}')
 
         if buy_token == 0 or sell_token == 0:
-            log_error('Order invalid: either sell or buy token is zero.')
-            exit_with_error()
+            exit_with_error('Order invalid: either sell or buy token is zero.')
 
         # Parse amms in terms of number of trading legs and pools.
         trade_path = sell_token + buy_token

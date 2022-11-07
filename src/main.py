@@ -28,9 +28,9 @@ def run_menu() -> argparse.ArgumentParser:
 def run() -> None:
     """Entry point for this module."""
 
-    env_vars = load_config()
     parser = run_menu()
     args = parser.parse_args()
+    env_vars = load_config()
 
     if args.amms:
 

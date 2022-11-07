@@ -14,9 +14,10 @@ def to_decimal_str(value) -> str:
     return str(to_decimal(value))
 
 
-def to_wei_str(value, decimals = 18) -> str:
+def to_wei_str(value, decimals=None) -> str:
     """Parse an order string to wei value."""
 
+    decimals = decimals or 18
     try:
         return str(value)[:-decimals] + '_' + str(value)[-decimals:]
     except ValueError as e:
