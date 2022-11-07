@@ -256,7 +256,6 @@ class SpreadSolverApi(object):
             # Log trade info
             self._print_initial_info_two_legs('SECOND LEG', second_leg_order, second_leg_data)
             self._print_extra_info(solution_second_leg)
-            self._print_total_order_surplus(self.__supplus_ranking[order['order_num']][amm_token])
 
             # Save results
             solution_first_leg['amm_buy_token'] = first_leg_data['buy_token']
@@ -282,7 +281,7 @@ class SpreadSolverApi(object):
             """
 
             # Get the best two paths (i.e., the two tokens Ti with best surplus).
-            log_debug('Using the best two execution simulations by surplus yield.')  
+            log_info('Using the best two execution simulations by surplus yield.')  
             self._run_two_leg_trade_one_path(order, amms, simulation=True)
             path1, path2 = self._get_surplus_rank(order)
 
