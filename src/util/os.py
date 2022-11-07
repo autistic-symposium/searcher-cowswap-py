@@ -33,7 +33,7 @@ def load_config() -> dict:
     env_file = Path('.') / '.env'
     if not os.path.isfile(env_file):
         log_error('Please create an .env file')
-        sys.exit(1)
+        exit_with_error()
 
     env_vars = {}
     load_dotenv(env_file)
@@ -79,7 +79,7 @@ def open_json(filepath) -> dict:
 
     except (IOError, FileNotFoundError) as e:
         log_error(f'Failed to parse: "{filepath}": {e}')
-        sys.exit(1)
+        exit_with_error()
 
 
 def format_path(dir_path, filename) -> str:
@@ -130,10 +130,13 @@ def set_output(env_vars, input_file) -> str:
 
     except (TypeError, KeyError) as e:
         log_error(f'Could not format output file: {e}')
-        sys.exit(1)
+        exit_with_error()
 
 
 def deep_copy(dict_to_clone) -> dict:
     """Deep copy (not reference copy) to a dict."""
 
     return copy.deepcopy(dict_to_clone)
+
+def exit_with_error() -> None:
+    sys.exit(1)
