@@ -3,6 +3,7 @@
 # This class implements an api to parse order instances.
 
 
+import sys
 from src.util.os import open_json, log_error
 from src.util.strings import to_decimal_str, pprint
 
@@ -76,6 +77,7 @@ class OrdersApi(object):
 
         except KeyError as e:
             log_error(f'Input order data is ill-formatted: {e}')
+            sys.exit(1)
 
     ###############################
     #     Public methods          #

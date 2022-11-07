@@ -402,6 +402,12 @@ class SpreadSolverApi(object):
             log_info('2️⃣ SECOND LEG trade overview:')
             self._print_extra_info(solution_second_leg_path2)
 
+            total_surplus = solution_first_leg_path1['surplus'] + solution_second_leg_path1['surplus'] + \
+                        solution_first_leg_path2['surplus']  + solution_second_leg_path2['surplus']
+
+            # fix surplus from total order
+
+            self._print_total_order_surplus(total_surplus)
 
             this_amms = {
                 key1: solution_first_leg_path1,
