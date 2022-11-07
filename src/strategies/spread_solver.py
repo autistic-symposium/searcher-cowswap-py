@@ -206,6 +206,7 @@ class SpreadSolverApi(object):
             # Perform trade simulation
             second_leg_trade = ConstantProductAmmApi(second_leg_order, second_leg_data)
             solution_second_leg = second_leg_trade.solve()
+            
 
             if not simulation:
                 # Log trade input info
@@ -223,8 +224,8 @@ class SpreadSolverApi(object):
             # calculate surplus (if it's negative, trade is not fillable so skip)
             total_surplus = solution_first_leg['surplus'] + solution_second_leg['surplus']
             self.__supplus_ranking[this_order['order_num']][amm_token] = total_surplus
-            if total_surplus < 0:
-                continue
+            #if total_surplus < 0:
+            #    continue
 
             if not simulation:
                 # Print results
@@ -253,47 +254,53 @@ class SpreadSolverApi(object):
             i.e., A -> C through A -> T1 -> C AND A -> T2 -> C.
         """
 
-        order_sell_amount_cte = 1000000000000000000000 # sell A
-        order_buy_amount_cte = 900000000000000000000 # buy C
+        order_sell_amount = int(this_order['sell_amount'])   #1000000000000000000000 # sell A
+        order_buy_amount = int(this_order['buy_amount'])    #900000000000000000000 # buy C
 
-        ab1_sell_reserve_cte = 10000000000000000000000 # order sell A
-        ab1_buy_reserve_cte = 20000000000000000000000 # order buy B3
-        ab3_sell_reserve_cte = 12000000000000000000000 # order sell A
-        ab3_buy_reserve_cte = 12000000000000000000000 # order buy B3
-        b1c_sell_reserve_cte = 23000000000000000000000 #order sell B1
-        b1c_buy_reserve_cte = 15000000000000000000000 # order buy C
-        b3c_sell_reserve_cte = 10000000000000000000000 # order sell B3
-        b3c_buy_reserve_cte = 15000000000000000000000 # order buy C
 
-        limit_price_cte = order_sell_amount_cte / order_buy_amount_cte
+        ab1_sell_reserve = int(amm1['first_leg']['sell_reserve'])           #10000000000000000000000 # order sell A
+        ab1_buy_reserve = int(amm1['first_leg']['buy_reserve'])           #120000000000000000000000 # order buy B3
+        b1c_sell_reserve = int(amm1['second_leg']['sell_reserve'])  #order sell B1
+        b1c_buy_reserve = int(amm1['second_leg']['buy_reserve'])  # order buy C
+
+        ab3_sell_reserve = int(amm2['first_leg']['sell_reserve'])      # 112000000000000000000000 # order sell A
+        ab3_buy_reserve= int(amm2['first_leg']['buy_reserve'])   # 112000000000000000000000 # order buy B3
+        b3c_sell_reserve_cte = int(amm2['second_leg']['sell_reserve'])  # order sell B3
+        b3c_buy_reserve_cte = int(amm2['second_leg']['buy_reserve']) # order buy C
+
+        limit_price_cte = order_sell_amount / order_buy_amount
 
         # a -> b
         ab1_buy_amount = 289034099526748718745
-        ab1_buy_amount_max = order_sell_amount_cte
+        ab1_buy_amount_max = order_sell_amount
         ab1_buy_amount_min = 0
         
         def surplus_equation(ab1_buy_amount):
-            return (b1c_buy_reserve_cte * (ab1_buy_reserve_cte * ab1_buy_amount) / \
-                    (ab1_sell_reserve_cte + ab1_buy_amount)) / (b1c_sell_reserve_cte + \
-                    (ab1_buy_reserve_cte * ab1_buy_amount) / (ab1_sell_reserve_cte + ab1_buy_amount)) + \
-                    (b3c_buy_reserve_cte * (ab3_buy_reserve_cte * (order_sell_amount_cte - ab1_buy_amount)) / \
-                    (ab3_sell_reserve_cte + (order_sell_amount_cte - ab1_buy_amount))) / \
-                    (b3c_sell_reserve_cte + (ab3_buy_reserve_cte * (order_sell_amount_cte - ab1_buy_amount)) / \
-                    (ab3_sell_reserve_cte + (order_sell_amount_cte - ab1_buy_amount))) - \
-                    order_sell_amount_cte / limit_price_cte
+            return (b1c_buy_reserve * (ab1_buy_reserve * ab1_buy_amount) / \
+                    (ab1_sell_reserve + ab1_buy_amount)) / (b1c_sell_reserve + \
+                    (ab1_buy_reserve * ab1_buy_amount) / (ab1_sell_reserve + ab1_buy_amount)) + \
+                    (b3c_buy_reserve_cte * (ab3_buy_reserve * (order_sell_amount - ab1_buy_amount)) / \
+                    (ab3_sell_reserve + (order_sell_amount - ab1_buy_amount))) / \
+                    (b3c_sell_reserve_cte + (ab3_buy_reserve * (order_sell_amount - ab1_buy_amount)) / \
+                    (ab3_sell_reserve + (order_sell_amount - ab1_buy_amount))) - \
+                    order_sell_amount / limit_price_cte
 
         print(surplus_equation(ab1_buy_amount))
         from src.util.arithmetics import nelder_mead_simplex_optimization
 
         boundary = (ab1_buy_amount_min, ab1_buy_amount_max)
         solution = nelder_mead_simplex_optimization(surplus_equation, boundary)
-        
+        print(int(to_decimal(solution)))
+        print(int(to_decimal(order_sell_amount - solution)))
 
-        print(solution)
+        exec_buy_amount_t1 = int(to_decimal(solution))
+        exec_buy_amount_t2 = int(to_decimal(order_sell_amount - solution))
 
-        import sys
-        sys.exit()
-        return simulated_amms
+        #amm1['first_leg']['exec_buy_amount'] = int(to_decimal(solution))
+        #amm2['first_leg']['exec_buy_amount'] = int(to_decimal(order_sell_amount - solution))
+
+
+        return exec_buy_amount_t1, exec_buy_amount_t2
       
 
     def _run_two_legs_trade(self, this_order, amms) -> dict:
@@ -302,12 +309,14 @@ class SpreadSolverApi(object):
             for either one or multiple execution paths, then calculate the
             most optimal path for this trade, returning the final solution.
         """
-
+        from src.util.strings import pprint
         solution = {}
 
         if len(amms) == 1:
             this_amms = self._run_two_leg_trade(this_order, amms, simulation=False)
         
+            pprint(this_order)
+
         elif len(amms) > 1:
             # Solve for two-legs trade with multiple execution pools.
             log_debug('Using the best two execution simulations by surplus yield.')            
@@ -323,9 +332,47 @@ class SpreadSolverApi(object):
             key2 = midtoken1 + this_order['buy_token'] 
             key3 = this_order['sell_token'] + midtoken2
             key4 = midtoken2 + this_order['buy_token'] 
-    
 
-            this_amms = self._optimize_for_2_legs_2_pools(amms[midtoken1], amms[midtoken2], this_order)
+
+            amms1 = amms[midtoken1]
+            amms2 = amms[midtoken2]
+    
+            exec_buy_amount_t1, exec_buy_amount_t2 = self._optimize_for_2_legs_2_pools(amms1, amms2, this_order)
+
+
+            
+
+
+            order1 = deep_copy(this_order)
+            order1['sell_amount'] = exec_buy_amount_t1
+            order2 = deep_copy(this_order)
+            order2['sell_amount'] = exec_buy_amount_t2
+
+            #amms1 = {midtoken1: amms1}
+            #amms2 = {midtoken2: amms2}
+            print(amms1)
+
+
+            first_leg_trade = ConstantProductAmmApi(order1, amms1['first_leg'])
+            solution_first_leg = first_leg_trade.solve()
+
+            second_leg_order = deep_copy(order1)
+            second_leg_order['sell_amount'] = solution_first_leg['amm_exec_buy_amount']
+            second_leg_order['buy_amount'] = solution_first_leg['amm_exec_sell_amount']
+
+            
+            second_leg_trade = ConstantProductAmmApi(second_leg_order, amms1['second_leg'])
+            solution_second_leg = second_leg_trade.solve()
+
+            #this_amms1 = self._run_two_leg_trade(order1, amms1, simulation=False)
+            #this_amms2 = self._run_two_leg_trade(order2, amms2, simulation=False)
+
+            pprint(solution_second_leg)
+
+
+            import sys
+            sys.exit()
+
 
         # Save the final amms solution to a suitable format.
         for amm_name, amm_data in this_amms.items():
