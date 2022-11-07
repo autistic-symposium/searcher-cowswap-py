@@ -496,7 +496,227 @@ Generates this (`DEBUG`) output:
 <br>
 
 ```
+✅ Solving orders/instance_3.json with spread strategy.
+🟨 Using the best two execution simulations by surplus yield.
+4.0114650463232066e+20
+289073705673240477696
+710926294326759522304
+✅ EXECUTION PATH1
+✅ ✅ FIRST LEG trade overview:
+🟨   Prior sell reserve: 10000_000000000000000000
+🟨   Prior buy reserve: 20000_000000000000000000
+🟨   Prior sell price 0.5
+🟨   Prior buy price 2.0
+🟨   AMM exec sell amount: 289_073705673240477696
+🟨   AMM exec buy amount: 561_904237334502880476
+🟨   Updated sell reserve: 10289_073705673240477700
+🟨   Updated buy reserve: 19438_095762665497119520
+🟨   Market sell price 0.5293251886038823
+🟨   Market buy price 1.8891978343927718
+🟨   Can fill: True
+🟨   Surplus: -338_095762665497119524
+✅ ✅ SECOND LEG trade overview:
+🟨   Prior sell reserve: 23000_000000000000000000
+🟨   Prior buy reserve: 15000_000000000000000000
+🟨   Prior sell price 1.5333333333333334
+🟨   Prior buy price 0.6521739130434783
+🟨   AMM exec sell amount: 561_904237334502880476
+🟨   AMM exec buy amount: 357_719965038404924081
+🟨   Updated sell reserve: 23561_904237334502880480
+🟨   Updated buy reserve: 14642_280034961595075920
+🟨   Market sell price 1.609169076200932
+🟨   Market buy price 0.6214387380354636
+🟨   Can fill: True
+🟨   Surplus: 68_646259365164446385
+✅ EXECUTION PATH2
+✅ ✅ FIRST LEG trade overview:
+🟨   Prior sell reserve: 12000_000000000000000000
+🟨   Prior buy reserve: 12000_000000000000000000
+🟨   Prior sell price 1.0
+🟨   Prior buy price 1.0
+🟨   AMM exec sell amount: 710_926294326759522304
+🟨   AMM exec buy amount: 671_163952522389243203
+🟨   Updated sell reserve: 12710_926294326759522300
+🟨   Updated buy reserve: 11328_836047477610756800
+🟨   Market sell price 1.1219975504153292
+🟨   Market buy price 0.8912675429904732
+🟨   Can fill: True
+🟨   Surplus: -228_836047477610756797
+✅ ✅ SECOND LEG trade overview:
+🟨   Prior sell reserve: 10000_000000000000000000
+🟨   Prior buy reserve: 15000_000000000000000000
+🟨   Prior sell price 0.6666666666666666
+🟨   Prior buy price 1.5
+🟨   AMM exec sell amount: 671_163952522389243203
+🟨   AMM exec buy amount: 943_426540218806186671
+🟨   Updated sell reserve: 10671_163952522389243200
+🟨   Updated buy reserve: 14056_573459781193813330
+🟨   Market sell price 0.7591582673440884
+🟨   Market buy price 1.317248382868167
+🟨   Can fill: True
+🟨   Surplus: 232_500245892046664367
+✅ Results saved at solutions/solution_3_cowsol.json.
+(v) mia•~/src/COW-SOLVER(final⚡)» make install                                                                                                                                                                                                                                                                                           [17:36:41]
+python3 setup.py install
+running install
+/Users/mia/src/COW-SOLVER/v/lib/python3.10/site-packages/setuptools/command/install.py:34: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.
+  warnings.warn(
+/Users/mia/src/COW-SOLVER/v/lib/python3.10/site-packages/setuptools/command/easy_install.py:144: EasyInstallDeprecationWarning: easy_install command is deprecated. Use build and pip and other standards-based tools.
+  warnings.warn(
+running bdist_egg
+running egg_info
+writing cowsol.egg-info/PKG-INFO
+writing dependency_links to cowsol.egg-info/dependency_links.txt
+writing entry points to cowsol.egg-info/entry_points.txt
+writing requirements to cowsol.egg-info/requires.txt
+writing top-level names to cowsol.egg-info/top_level.txt
+reading manifest file 'cowsol.egg-info/SOURCES.txt'
+writing manifest file 'cowsol.egg-info/SOURCES.txt'
+installing library code to build/bdist.macosx-12-arm64/egg
+running install_lib
+running build_py
+copying src/strategies/spread_solver.py -> build/lib/src/strategies
+creating build/bdist.macosx-12-arm64/egg
+creating build/bdist.macosx-12-arm64/egg/src
+creating build/bdist.macosx-12-arm64/egg/src/apis
+copying build/lib/src/apis/__init__.py -> build/bdist.macosx-12-arm64/egg/src/apis
+copying build/lib/src/apis/orders.py -> build/bdist.macosx-12-arm64/egg/src/apis
+copying build/lib/src/apis/uniswapv2.py -> build/bdist.macosx-12-arm64/egg/src/apis
+creating build/bdist.macosx-12-arm64/egg/src/util
+copying build/lib/src/util/arithmetics.py -> build/bdist.macosx-12-arm64/egg/src/util
+copying build/lib/src/util/os.py -> build/bdist.macosx-12-arm64/egg/src/util
+copying build/lib/src/util/__init__.py -> build/bdist.macosx-12-arm64/egg/src/util
+copying build/lib/src/util/strings.py -> build/bdist.macosx-12-arm64/egg/src/util
+creating build/bdist.macosx-12-arm64/egg/src/strategies
+copying build/lib/src/strategies/spread_solver.py -> build/bdist.macosx-12-arm64/egg/src/strategies
+copying build/lib/src/strategies/__init__.py -> build/bdist.macosx-12-arm64/egg/src/strategies
+copying build/lib/src/__init__.py -> build/bdist.macosx-12-arm64/egg/src
+copying build/lib/src/main.py -> build/bdist.macosx-12-arm64/egg/src
+byte-compiling build/bdist.macosx-12-arm64/egg/src/apis/__init__.py to __init__.cpython-310.pyc
+byte-compiling build/bdist.macosx-12-arm64/egg/src/apis/orders.py to orders.cpython-310.pyc
+byte-compiling build/bdist.macosx-12-arm64/egg/src/apis/uniswapv2.py to uniswapv2.cpython-310.pyc
+byte-compiling build/bdist.macosx-12-arm64/egg/src/util/arithmetics.py to arithmetics.cpython-310.pyc
+byte-compiling build/bdist.macosx-12-arm64/egg/src/util/os.py to os.cpython-310.pyc
+byte-compiling build/bdist.macosx-12-arm64/egg/src/util/__init__.py to __init__.cpython-310.pyc
+byte-compiling build/bdist.macosx-12-arm64/egg/src/util/strings.py to strings.cpython-310.pyc
+byte-compiling build/bdist.macosx-12-arm64/egg/src/strategies/spread_solver.py to spread_solver.cpython-310.pyc
+byte-compiling build/bdist.macosx-12-arm64/egg/src/strategies/__init__.py to __init__.cpython-310.pyc
+byte-compiling build/bdist.macosx-12-arm64/egg/src/__init__.py to __init__.cpython-310.pyc
+byte-compiling build/bdist.macosx-12-arm64/egg/src/main.py to main.cpython-310.pyc
+creating build/bdist.macosx-12-arm64/egg/EGG-INFO
+copying cowsol.egg-info/PKG-INFO -> build/bdist.macosx-12-arm64/egg/EGG-INFO
+copying cowsol.egg-info/SOURCES.txt -> build/bdist.macosx-12-arm64/egg/EGG-INFO
+copying cowsol.egg-info/dependency_links.txt -> build/bdist.macosx-12-arm64/egg/EGG-INFO
+copying cowsol.egg-info/entry_points.txt -> build/bdist.macosx-12-arm64/egg/EGG-INFO
+copying cowsol.egg-info/requires.txt -> build/bdist.macosx-12-arm64/egg/EGG-INFO
+copying cowsol.egg-info/top_level.txt -> build/bdist.macosx-12-arm64/egg/EGG-INFO
+zip_safe flag not set; analyzing archive contents...
+creating 'dist/cowsol-0.1-py3.10.egg' and adding 'build/bdist.macosx-12-arm64/egg' to it
+removing 'build/bdist.macosx-12-arm64/egg' (and everything under it)
+Processing cowsol-0.1-py3.10.egg
+Removing /Users/mia/src/COW-SOLVER/v/lib/python3.10/site-packages/cowsol-0.1-py3.10.egg
+Copying cowsol-0.1-py3.10.egg to /Users/mia/src/COW-SOLVER/v/lib/python3.10/site-packages
+cowsol 0.1 is already the active version in easy-install.pth
+Installing cowsol script to /Users/mia/src/COW-SOLVER/v/bin
 
+Installed /Users/mia/src/COW-SOLVER/v/lib/python3.10/site-packages/cowsol-0.1-py3.10.egg
+Processing dependencies for cowsol==0.1
+Searching for requests==2.28.1
+Best match: requests 2.28.1
+Processing requests-2.28.1-py3.10.egg
+requests 2.28.1 is already the active version in easy-install.pth
+
+Using /Users/mia/src/COW-SOLVER/v/lib/python3.10/site-packages/requests-2.28.1-py3.10.egg
+Searching for python-dotenv==0.20.0
+Best match: python-dotenv 0.20.0
+Adding python-dotenv 0.20.0 to easy-install.pth file
+Installing dotenv script to /Users/mia/src/COW-SOLVER/v/bin
+
+Using /Users/mia/src/COW-SOLVER/v/lib/python3.10/site-packages
+Searching for certifi==2022.9.24
+Best match: certifi 2022.9.24
+Processing certifi-2022.9.24-py3.10.egg
+certifi 2022.9.24 is already the active version in easy-install.pth
+
+Using /Users/mia/src/COW-SOLVER/v/lib/python3.10/site-packages/certifi-2022.9.24-py3.10.egg
+Searching for urllib3==1.26.12
+Best match: urllib3 1.26.12
+Processing urllib3-1.26.12-py3.10.egg
+urllib3 1.26.12 is already the active version in easy-install.pth
+
+Using /Users/mia/src/COW-SOLVER/v/lib/python3.10/site-packages/urllib3-1.26.12-py3.10.egg
+Searching for idna==3.4
+Best match: idna 3.4
+Processing idna-3.4-py3.10.egg
+idna 3.4 is already the active version in easy-install.pth
+
+Using /Users/mia/src/COW-SOLVER/v/lib/python3.10/site-packages/idna-3.4-py3.10.egg
+Searching for charset-normalizer==2.1.1
+Best match: charset-normalizer 2.1.1
+Processing charset_normalizer-2.1.1-py3.10.egg
+charset-normalizer 2.1.1 is already the active version in easy-install.pth
+Installing normalizer script to /Users/mia/src/COW-SOLVER/v/bin
+
+Using /Users/mia/src/COW-SOLVER/v/lib/python3.10/site-packages/charset_normalizer-2.1.1-py3.10.egg
+Finished processing dependencies for cowsol==0.1
+(v) mia•~/src/COW-SOLVER(final⚡)» cowsol -s orders/instance_3.json                                                                                                                                                                                                                                                                       [17:37:18]
+✅ Solving orders/instance_3.json with spread strategy.
+🟨 Using the best two execution simulations by surplus yield.
+✅ EXECUTION PATH1
+✅ 1️⃣ FIRST LEG trade overview:
+🟨   Prior sell reserve: 10000_000000000000000000
+🟨   Prior buy reserve: 20000_000000000000000000
+🟨   Prior sell price 0.5
+🟨   Prior buy price 2.0
+🟨   AMM exec sell amount: 289_073705673240477696
+🟨   AMM exec buy amount: 561_904237334502880476
+🟨   Updated sell reserve: 10289_073705673240477700
+🟨   Updated buy reserve: 19438_095762665497119520
+🟨   Market sell price 0.5293251886038823
+🟨   Market buy price 1.8891978343927718
+🟨   Can fill: True
+🟨   Surplus: -338_095762665497119524
+✅ 1️⃣ SECOND LEG trade overview:
+🟨   Prior sell reserve: 23000_000000000000000000
+🟨   Prior buy reserve: 15000_000000000000000000
+🟨   Prior sell price 1.5333333333333334
+🟨   Prior buy price 0.6521739130434783
+🟨   AMM exec sell amount: 561_904237334502880476
+🟨   AMM exec buy amount: 357_719965038404924081
+🟨   Updated sell reserve: 23561_904237334502880480
+🟨   Updated buy reserve: 14642_280034961595075920
+🟨   Market sell price 1.609169076200932
+🟨   Market buy price 0.6214387380354636
+🟨   Can fill: True
+🟨   Surplus: 68_646259365164446385
+✅ EXECUTION PATH2
+✅ 2️⃣ FIRST LEG trade overview:
+🟨   Prior sell reserve: 12000_000000000000000000
+🟨   Prior buy reserve: 12000_000000000000000000
+🟨   Prior sell price 1.0
+🟨   Prior buy price 1.0
+🟨   AMM exec sell amount: 710_926294326759522304
+🟨   AMM exec buy amount: 671_163952522389243203
+🟨   Updated sell reserve: 12710_926294326759522300
+🟨   Updated buy reserve: 11328_836047477610756800
+🟨   Market sell price 1.1219975504153292
+🟨   Market buy price 0.8912675429904732
+🟨   Can fill: True
+🟨   Surplus: -228_836047477610756797
+✅ 2️⃣ SECOND LEG trade overview:
+🟨   Prior sell reserve: 10000_000000000000000000
+🟨   Prior buy reserve: 15000_000000000000000000
+🟨   Prior sell price 0.6666666666666666
+🟨   Prior buy price 1.5
+🟨   AMM exec sell amount: 671_163952522389243203
+🟨   AMM exec buy amount: 943_426540218806186671
+🟨   Updated sell reserve: 10671_163952522389243200
+🟨   Updated buy reserve: 14056_573459781193813330
+🟨   Market sell price 0.7591582673440884
+🟨   Market buy price 1.317248382868167
+🟨   Can fill: True
+🟨   Surplus: 232_500245892046664367
+✅ Results saved at solutions/solution_3_cowsol.json.
 ```
 
 <br>
@@ -504,7 +724,46 @@ Generates this (`DEBUG`) output:
 And this solution:
 
 ```
-
+{
+    "amms": {
+        "AB1": {
+            "sell_token": "B1",
+            "buy_token": "A",
+            "exec_sell_amount": "561_904237334502880476",
+            "exec_buy_amount": "289_073705673240477696"
+        },
+        "B1C": {
+            "sell_token": "C",
+            "buy_token": "B1",
+            "exec_sell_amount": "357_719965038404924081",
+            "exec_buy_amount": "561_904237334502880476"
+        },
+        "AB3": {
+            "sell_token": "B3",
+            "buy_token": "A",
+            "exec_sell_amount": "671_163952522389243203",
+            "exec_buy_amount": "710_926294326759522304"
+        },
+        "B3C": {
+            "sell_token": "C",
+            "buy_token": "B3",
+            "exec_sell_amount": "943_426540218806186671",
+            "exec_buy_amount": "671_163952522389243203"
+        }
+    },
+    "orders": {
+        "0": {
+            "allow_partial_fill": false,
+            "is_sell_order": true,
+            "buy_amount": "900_000000000000000000",
+            "sell_amount": "1000_000000000000000000",
+            "buy_token": "C",
+            "sell_token": "A",
+            "exec_buy_amount": "1301_146505257211110752",
+            "exec_sell_amount": "1000_000000000000000000"
+        }
+    }
+}
 ```
 
 

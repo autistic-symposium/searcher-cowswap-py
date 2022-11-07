@@ -391,6 +391,17 @@ class SpreadSolverApi(object):
             solution_second_leg_path2['amm_buy_token'] = amms2['second_leg']['buy_token']
             solution_second_leg_path2['amm_sell_token'] = amms2['second_leg']['sell_token']
 
+            log_info('EXECUTION PATH1')
+            log_info('1️⃣ FIRST LEG trade overview:')
+            self._print_extra_info(solution_first_leg_path1)
+            log_info('1️⃣ SECOND LEG trade overview:')
+            self._print_extra_info(solution_second_leg_path1)
+            log_info('EXECUTION PATH2')
+            log_info('2️⃣ FIRST LEG trade overview:')
+            self._print_extra_info(solution_first_leg_path2)
+            log_info('2️⃣ SECOND LEG trade overview:')
+            self._print_extra_info(solution_second_leg_path2)
+
 
             this_amms = {
                 key1: solution_first_leg_path1,
