@@ -2,7 +2,7 @@
 
 <br>
 
-**This program implements a solver running arbitrage strategies for the [CoW Protocol](https://github.com/cowprotocol).**
+**This program implements a solver running arbitrage strategies for [CoW Protocol](https://github.com/cowprotocol).**
 
 <br>
 
@@ -20,11 +20,11 @@
 #### Spread trades
 
 * **One-leg limit price trade**.
-    - In this type of order (`orders/instance_1.json`), we have a limit price and one reserve (`A -> C`), so it's a straightforward solution.
+    - In this type of order (*e.g.,* `orders/instance_1.json`), we have a limit price and one pool reserve (*e.g.*, `A -> C`).
 * **Two-legs limit price trade for a single execution path**.
-    - In this type of order (`orders/instance_2.json`), we have a two-legs trade (`A -> B -> C`) but with only one option for each leg, so we simply walk the legs without the need for optimization.
+    - In this type of order (*e.g.*, `orders/instance_2.json`), we have a two-legs trade (*e.g.*, `A -> B -> C`), with only one option for each leg and it can be solved without any optimization.
 * **Two-legs limit price trade for multiple execution paths**.
-    - In this type of order (`orders/instance_3.json`), we have a two-legs trade (`A -> B -> C`) but with multiple pool options for each leg (`B1`, `B2`, `B3`, etc), so we complete the order by dividing the order through multiple paths to optimize for total surplus.
+    - In this type of order (*e.g*., `orders/instance_3.json`), we have a two-legs trade (*e.g.*, `A -> B -> C`) with multiple pool reserves for each leg (*e.g.*, `B1`, `B2`, `B3`), so the order can be completed dividing it through multiple paths and optimizing for maximum total surplus.
 <br>
 
 
@@ -42,8 +42,8 @@
 
 
 * Support for limit price orders for single order instances.
-* Support for limit price orders for multiple orders on a single token pairs instance.
-* Support for limit price orders for multiple orders on multiple token pairs instances.
+* Support for limit price orders for multiple orders on a single reserve instance.
+* Support for limit price orders for multiple orders on multiple reserve instances.
 
 
 <br>
@@ -73,7 +73,7 @@ surplus = exec_buy_amount  - exec_sell_amount / limit_price
 
 #### Amounts representation
 
-All amounts are expressed by non-negative integer numbers, represented in atoms (i.e., multiples of `10**18`). We add an underline (`_`) to results to denote decimal position, allowing easier reading.
+All amounts are expressed by non-negative integer numbers, represented in atoms (*i.e.*, multiples of $10^{18}$). We add an underline (`_`) to results to denote decimal position, allowing easier reading.
 
 ---
 
@@ -85,20 +85,22 @@ User orders describe a trading intent.
 
 * `sell_token`: token to be sold (added to the amm pool).
 * `buy_token`: token to be bought (removed from the amm pool).
-* `allow_partial_fill`: if `False`, only fill-or-kill orders are executed.
 * `sell_amount`: limit amount for tokens to be sold.
 * `buy_amount`: limit amount for tokens to be bought.
 * `exec_sell_amount`: how many tokens get sold after order execution.
+* `exec_buy_amount`: how many tokens get bought after order execution.
+* `allow_partial_fill`: if `False`, only fill-or-kill orders are executed.
+* `is_sell_order`: if it's sell or buy order.
 
 <br>
 
 #### AMM exec specs
 
 
-* `amm_exec_buy_amount`: how many tokens the amm "buys" (gets) from the user, and it's the sum of all `exec_sell_amount` amounts of each path (leg) in the order execution.
-* `amm_exec_sell_amount`: how many tokens the amm "sells" (gives) to the user, and it's the sum of all `exec_buy_amount` amounts of each path (leg) in the order execution.
-* `market_price`: the price to buy a token through the user order specs.
-* `prior_price`: the buy price of a token in the reserve prior to being altered by the order.
+* `amm_exec_buy_amount`: how many tokens the amm "buys" (gets) from the user, and it's the sum of all `exec_sell_amount` of each path (leg) in the order execution.
+* `amm_exec_sell_amount`: how many tokens the amm "sells" (gives) to the user, and it's the sum of all `exec_buy_amount` of each path (leg) in the order execution.
+* `market_price`: the price to buy/sell a token through the user order specs.
+* `prior_price`: the price to buy/sell a token prior to being altered by the order.
 * `prior_sell_token_reserve`: the initial reserve amount of the "sell" token, prior to being altered by the order.
 * `prior_buy_token_reserve`: the initial reserve amount of the "buy" token, prior to being altered by the order.
 * `updated_sell_token_reserve`: the reserve amount of the "sell" token after being altered by the order.
@@ -240,10 +242,11 @@ Generates this output (logging set to `DEBUG`):
 <br>
 
 ```
-✅ Solving orders/instance_1.json with spread strategy.
-✅ One-leg trade overview:
-✅ ➖ sell 1000_000000000000000000 of A, amm reserve: 10000_000000000000000000
-✅ ➕ buy 900_000000000000000000 of C, amm reserve: 10000_000000000000000000
+🐮 Solving orders/instance_1.json with spread strategy.
+🐮 Order 0 is a sell order.
+🐮 One-leg trade overview:
+🐮 ➖ sell 1000_000000000000000000 of A, amm reserve: 10000_000000000000000000
+🐮 ➕ buy 900_000000000000000000 of C, amm reserve: 10000_000000000000000000
 🟨   Prior sell reserve: 10000_000000000000000000
 🟨   Prior buy reserve: 10000_000000000000000000
 🟨   Prior sell price 1.0
@@ -255,8 +258,8 @@ Generates this output (logging set to `DEBUG`):
 🟨   Market sell price 1.21
 🟨   Market buy price 0.8264462809917356
 🟨   Can fill: True
-✅ TOTAL SURPLUS: 9_090909090909090909
-✅ Results saved at solutions/solution_1_cowsol.json.
+🐮 TOTAL SURPLUS: 9_090909090909090909
+🐮 Results saved at solutions/solution_1_cowsol.json.
 ```
 
 <br>
@@ -348,10 +351,11 @@ Generates this (`DEBUG`) output:
 
 
 ```
-✅ Solving orders/instance_2.json with spread strategy.
-✅ FIRST LEG trade overview:
-✅ ➖ sell 1000_000000000000000000 of A
-✅ ➕ buy some amount of B2
+🐮 Solving orders/instance_2.json with spread strategy.
+🐮 Order 0 is a sell order.
+🐮 FIRST LEG trade overview:
+🐮 ➖ sell 1000_000000000000000000 of A
+🐮 ➕ buy some amount of B2
 🟨   Prior sell reserve: 10000_000000000000000000
 🟨   Prior buy reserve: 20000_000000000000000000
 🟨   Prior sell price 0.5
@@ -363,9 +367,9 @@ Generates this (`DEBUG`) output:
 🟨   Market sell price 0.605
 🟨   Market buy price 1.6528925619834711
 🟨   Can fill: True
-✅ SECOND LEG trade overview:
-✅ ➖ sell 1818_181818181818181818 of B2
-✅ ➕ buy some amount of C
+🐮 SECOND LEG trade overview:
+🐮 ➖ sell 1818_181818181818181818 of B2
+🐮 ➕ buy some amount of C
 🟨   Prior sell reserve: 15000_000000000000000000
 🟨   Prior buy reserve: 10000_000000000000000000
 🟨   Prior sell price 1.5
@@ -377,8 +381,8 @@ Generates this (`DEBUG`) output:
 🟨   Market sell price 1.8856749311294765
 🟨   Market buy price 0.5303140978816655
 🟨   Can fill: True
-✅ TOTAL SURPLUS: 181_081081081081081081
-✅ Results saved at solutions/solution_2_cowsol.json.
+🐮 TOTAL SURPLUS: 181_081081081081081081
+🐮 Results saved at solutions/solution_2_cowsol.json.
 ```
 
 <br>
@@ -501,11 +505,12 @@ Generates this (`DEBUG`) output:
 <br>
 
 ```
-✅ Solving orders/instance_3.json with spread strategy.
-✅ Using the best two execution simulations by surplus yield.
-✅ FIRST LEG trade overview:
-✅ ➖ sell 289_073705673240477696 of A
-✅ ➕ buy some amount of B1
+🐮 Solving orders/instance_3.json with spread strategy.
+🐮 Order 0 is a sell order.
+🐮 Using the best two execution simulations by surplus yield.
+🐮 FIRST LEG trade overview:
+🐮 ➖ sell 289_073705673240477696 of A
+🐮 ➕ buy some amount of B1
 🟨   Prior sell reserve: 10000_000000000000000000
 🟨   Prior buy reserve: 20000_000000000000000000
 🟨   Prior sell price 0.5
@@ -517,9 +522,9 @@ Generates this (`DEBUG`) output:
 🟨   Market sell price 0.5293251886038823
 🟨   Market buy price 1.8891978343927718
 🟨   Can fill: True
-✅ SECOND LEG trade overview:
-✅ ➖ sell 561_904237334502880476 of B1
-✅ ➕ buy some amount of C
+🐮 SECOND LEG trade overview:
+🐮 ➖ sell 561_904237334502880476 of B1
+🐮 ➕ buy some amount of C
 🟨   Prior sell reserve: 23000_000000000000000000
 🟨   Prior buy reserve: 15000_000000000000000000
 🟨   Prior sell price 1.5333333333333334
@@ -531,9 +536,9 @@ Generates this (`DEBUG`) output:
 🟨   Market sell price 1.609169076200932
 🟨   Market buy price 0.6214387380354636
 🟨   Can fill: True
-✅ FIRST LEG trade overview:
-✅ ➖ sell 710_926294326759522304 of A
-✅ ➕ buy some amount of B3
+🐮 FIRST LEG trade overview:
+🐮 ➖ sell 710_926294326759522304 of A
+🐮 ➕ buy some amount of B3
 🟨   Prior sell reserve: 12000_000000000000000000
 🟨   Prior buy reserve: 12000_000000000000000000
 🟨   Prior sell price 1.0
@@ -545,9 +550,9 @@ Generates this (`DEBUG`) output:
 🟨   Market sell price 1.1219975504153292
 🟨   Market buy price 0.8912675429904732
 🟨   Can fill: True
-✅ SECOND LEG trade overview:
-✅ ➖ sell 671_163952522389243203 of B3
-✅ ➕ buy some amount of C
+🐮 SECOND LEG trade overview:
+🐮 ➖ sell 671_163952522389243203 of B3
+🐮 ➕ buy some amount of C
 🟨   Prior sell reserve: 10000_000000000000000000
 🟨   Prior buy reserve: 15000_000000000000000000
 🟨   Prior sell price 0.6666666666666666
@@ -559,8 +564,8 @@ Generates this (`DEBUG`) output:
 🟨   Market sell price 0.7591582673440884
 🟨   Market buy price 1.317248382868167
 🟨   Can fill: True
-✅ TOTAL SURPLUS: 401_146505257211110752
-✅ Results saved at solutions/solution_3_cowsol.json.
+🐮 TOTAL SURPLUS: 401_146505257211110752
+🐮 Results saved at solutions/solution_3_cowsol.json.
 ```
 
 <br>
@@ -625,7 +630,7 @@ Note: the derivation for the optimization equation for this strategy can be seen
 
 
 * Add support for more than two legs.
-* Add support for more than two pools in two-legs trade.
+* Add support for more than two pools on two-legs trade.
 * Add multiple path graph weighting and cyclic arbitrage detection using the Bellman-Ford algorithm, so that we can optimize by multiple paths without necessarily dividing the order through them. This would allow obtaining arbitrage profit through finding profitable negative cycles (*e.g.*, `A -> B -> C -> D -> A`).
 
 
@@ -641,9 +646,9 @@ Note: the derivation for the optimization equation for this strategy can be seen
 
 ### Code improvement
 
+* Implement support for AMM fees.
 * Add support for concurrency (`async`), so tasks could run in parallel adding temporal advantage to the solver.
-* Benchmark and possibly refactor `_run_two_leg_trade_multiple_paths()`.
-* Implement support for AMM fees when calculating surplus.
+* Benchmark and possibly add other optimization algorithms options.
 * Add an actual execution class (through CoW server or directly to the blockchains).
 * Finish implementing end-to-end BUY limit orders.
 * Add unit tests.
@@ -657,3 +662,4 @@ Note: the derivation for the optimization equation for this strategy can be seen
 
 * [cow.fi](http://cow.fi/)
 * [Solver specs](https://docs.cow.fi/off-chain-services/in-depth-solver-specification)
+* [CoW protocol support to ERC-1271](https://twitter.com/cowswap/status/1587895229666893824?s=12&t=y-P8Uf4eebJHrHCmZMk7jA&utm_source=substack&utm_medium=email)
