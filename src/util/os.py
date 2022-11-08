@@ -59,7 +59,7 @@ def log_error(string) -> None:
 def log_info(string) -> None:
     """Print STDOUT info using the logging library."""
 
-    logging.info('✅ %s', string)
+    logging.info('🐮 %s', string)
 
 
 def log_debug(string) -> None:

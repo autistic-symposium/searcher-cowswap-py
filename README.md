@@ -164,7 +164,7 @@ cowsol -a <order file>
 Example output:
 
 ```
-✅ AMMs available for orders/instance_1.json
+🐮 AMMs available for orders/instance_1.json
 
 {   'AC': {   'reserves': {   'A': '10000_000000000000000000',
                               'C': '10000_000000000000000000'}}}
@@ -185,7 +185,7 @@ cowsol -o <order file>
 Example output:
 
 ```
-✅ Orders for orders/instance_1.json
+🐮 Orders for orders/instance_1.json
 
 {   '0': {   'allow_partial_fill': False,
              'buy_amount': '900_000000000000000000',
