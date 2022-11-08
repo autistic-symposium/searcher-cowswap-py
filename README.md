@@ -17,7 +17,12 @@
 ## Current Strategies
 
 
-#### Spread trades
+
+### Spread arbitrage
+
+> Spread trades are the act of purchasing one security and selling another related security (legs) as a unit.
+
+<br>
 
 * **One-leg limit price trade**.
     - In this type of order (*e.g.,* `orders/instance_1.json`), we have a limit price and one pool reserve (*e.g.*, `A -> C`).
@@ -33,12 +38,12 @@
 ## Implemented features 
 
 
-#### Liquidity sources
+### Liquidity sources
 
 * Support for constant-product AMMs, such as Uniswap v2 (and its forks), where pools are represented by two token balances.
 
 
-#### Orders types
+### Orders types
 
 
 * Support for limit price orders for single order instances.
@@ -63,7 +68,7 @@ This limit determines when an order can be executed:
 limit_price = sell_amount / buy_amount >= executed_buy_amount / executed_sell_amount
 ```
 
-#### Surplus
+### Surplus
 
 For multiple execution paths (liquidity sources), we choose the best solution by maximizing the *surplus* of an order:
 
@@ -71,9 +76,11 @@ For multiple execution paths (liquidity sources), we choose the best solution by
 surplus = exec_buy_amount  - exec_sell_amount / limit_price
 ```
 
-#### Amounts representation
+### Amounts representation
 
 All amounts are expressed by non-negative integer numbers, represented in atoms (*i.e.*, multiples of $10^{18}$). We add an underline (`_`) to results to denote decimal position, allowing easier reading.
+
+<br>
 
 ---
 
@@ -81,7 +88,7 @@ All amounts are expressed by non-negative integer numbers, represented in atoms 
 
 User orders describe a trading intent.
 
-#### User order specs
+### User order specs
 
 * `sell_token`: token to be sold (added to the amm pool).
 * `buy_token`: token to be bought (removed from the amm pool).
@@ -94,7 +101,7 @@ User orders describe a trading intent.
 
 <br>
 
-#### AMM exec specs
+### AMM exec specs
 
 
 * `amm_exec_buy_amount`: how many tokens the amm "buys" (gets) from the user, and it's the sum of all `exec_sell_amount` of each path (leg) in the order execution.
@@ -114,7 +121,7 @@ User orders describe a trading intent.
 
 ## Installing
 
-#### Install Requirements
+### Install Requirements
 
 
 ```sh
@@ -125,7 +132,7 @@ make install_deps
 
 <br>
 
-#### Create an `.env`
+### Create an `.env`
 
 
 ```sh
@@ -135,7 +142,7 @@ vim .env
 
 <br>
 
-#### Install cowsol
+### Install cowsol
 
 ```sh
 make install
@@ -154,7 +161,7 @@ cowsol
 
 ## Usage
 
-#### Listing available pools in an order instance file
+### Listing available pools in an order instance file
 
 ```
 cowsol -a <order file>
@@ -174,7 +181,7 @@ Example output:
 
 <br>
 
-#### Listing orders in an order instance file
+### Listing orders in an order instance file
 
 ```
 cowsol -o <order file>
@@ -199,7 +206,7 @@ Example output:
 <br>
 
 
-#### Solving a spread trade for one-leg limit price
+### Solving a spread trade for one-leg limit price
 
 ```
 cowsol -s orders/instance_1.json 
@@ -303,7 +310,7 @@ Note:
 
 <br>
 
-#### Two-legs limit price trade for a single execution path
+### Two-legs limit price trade for a single execution path
 
 ```
 cowsol -s orders/instance_2.json 
@@ -426,7 +433,7 @@ And this solution:
 <br>
 
 
-#### Two-legs limit price trade for multiple execution paths
+### Two-legs limit price trade for multiple execution paths
 
 
 
