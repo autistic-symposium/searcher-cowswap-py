@@ -26,9 +26,10 @@ class ConstantProductAmmApi():
     ###############################
 
     def _get_exec_sell_amount(self) -> Decimal:
-        """"
-            Implement a constant-product the retrieval of tokens B from selling an amount
-            t of tokens A in an AB pool, where a and b are the initial token reserves:
+        """
+            Implement the constant-product relation for the retrieval of 
+            tokens B from selling an amount t of tokens A in an AB pool, 
+            where a and b are the initial token reserves:
                  δ    ≤    (b − a * b) / (a + t)    =    (b * t) / (a + t)
         """
 
