@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 # strategies/spread_solver.py
-# This class implements apis for a solver running spread arbitrage.
+# This class implements apis for a solver 
+# running a "non-market-maker" spread arbitrage.
 
 
 from src.util.strings import to_solution
