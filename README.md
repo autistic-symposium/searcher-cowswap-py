@@ -20,7 +20,7 @@
 
 ### "no market maker" spread arbitrage
 
-> Spread trades are the act of purchasing one security and selling another related security (legs) as a unit. Since the CoW protocol is fully permissionless, coincidence of wants guarantees that there is no need for fees to third parts.
+> Spread trades are the act of purchasing one security and selling another related security (legs) as a unit. 
 
 <br>
 
