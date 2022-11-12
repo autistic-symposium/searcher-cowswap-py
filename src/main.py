@@ -51,7 +51,7 @@ def run() -> None:
     elif args.spread:
 
         input_file = args.spread[0]
-        log_info(f'Solving {input_file} with spread strategy.')
+        log_info(f'Solving {input_file}.')
 
         # Create an instance for the entire instance input file.
         oa = OrdersApi(input_file)
