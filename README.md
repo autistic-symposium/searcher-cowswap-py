@@ -18,9 +18,9 @@
 
 
 
-### Spread arbitrage
+### "no market maker" spread arbitrage
 
-> Spread trades are the act of purchasing one security and selling another related security (legs) as a unit.
+> Spread trades are the act of purchasing one security and selling another related security (legs) as a unit. Since the CoW protocol is fully permissionless, coincidence of wants guarantees that there is no need for fees to third parts.
 
 <br>
 
@@ -206,7 +206,7 @@ Example output:
 <br>
 
 
-### Solving a spread trade for one-leg limit price
+### Solving a trade for one-leg limit price
 
 ```
 cowsol -s orders/instance_1.json 
@@ -249,7 +249,7 @@ Generates this output (logging set to `DEBUG`):
 <br>
 
 ```
-🐮 Solving orders/instance_1.json with spread strategy.
+🐮 Solving orders/instance_1.json.
 🐮 Order 0 is a sell order.
 🐮 One-leg trade overview:
 🐮 ➖ sell 1000_000000000000000000 of A, amm reserve: 10000_000000000000000000
@@ -358,7 +358,7 @@ Generates this (`DEBUG`) output:
 
 
 ```
-🐮 Solving orders/instance_2.json with spread strategy.
+🐮 Solving orders/instance_2.json.
 🐮 Order 0 is a sell order.
 🐮 FIRST LEG trade overview:
 🐮 ➖ sell 1000_000000000000000000 of A
@@ -512,7 +512,7 @@ Generates this (`DEBUG`) output:
 <br>
 
 ```
-🐮 Solving orders/instance_3.json with spread strategy.
+🐮 Solving orders/instance_3.json.
 🐮 Order 0 is a sell order.
 🐮 Using the best two execution simulations by surplus yield.
 🐮 FIRST LEG trade overview:
