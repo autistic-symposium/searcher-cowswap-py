@@ -8,6 +8,9 @@
 
 > *[Solvers](https://docs.cow.fi/off-chain-services/solvers) are a key component in the Cow Protocol, serving as the matching engines that find the best execution paths for user orders*.
 
+<br>
+
+For more details about this solver and CoW protocol in general, check [🐮✨bot #1: cowsol, an arb solver for CoW protocol](https://mirror.xyz/mevwaifu.eth/s_RwnRgJvK_6fLYPyav7lFT3Zs4W4ZvYwp-AM9EbuhQ).
 
 
 <br>
