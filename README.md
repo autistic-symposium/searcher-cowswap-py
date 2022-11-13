@@ -662,6 +662,7 @@ Note: the derivation for the optimization equation for this strategy can be seen
 * Add an actual execution class (through CoW server or directly to the blockchains).
 * Finish implementing end-to-end BUY limit orders.
 * Add unit tests.
+* add the bot server (on docker).
 
 <br>
 
