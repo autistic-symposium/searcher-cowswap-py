@@ -29,10 +29,10 @@ For more details about this solver and CoW protocol in general, check [🐮✨bo
 
 * **One-leg limit price trade**.
     - In this type of order (*e.g.,* `orders/instance_1.json`), we have a limit price and one pool reserve (*e.g.*, `A -> C`).
-* **Two-legs limit price trade for a single execution path**.
-    - In this type of order (*e.g.*, `orders/instance_2.json`), we have a two-legs trade (*e.g.*, `A -> B -> C`), with only one option for each leg and it can be solved without any optimization.
+* **Two-legged limit price trade for a single execution path**.
+    - In this type of order (*e.g.*, `orders/instance_2.json`), we have a two-legged trade (*e.g.*, `A -> B -> C`), with only one option for each leg and it can be solved without any optimization.
 * **Two-legs limit price trade for multiple execution paths**.
-    - In this type of order (*e.g*., `orders/instance_3.json`), we have a two-legs trade (*e.g.*, `A -> B -> C`) with multiple pool reserves for each leg (*e.g.*, `B1`, `B2`, `B3`), so the order can be completed dividing it through multiple paths and optimizing for maximum total surplus.
+    - In this type of order (*e.g*., `orders/instance_3.json`), we have a two-legged trade (*e.g.*, `A -> B -> C`) with multiple pool reserves for each leg (*e.g.*, `B1`, `B2`, `B3`), so the order can be completed dividing it through multiple paths and optimizing for maximum total surplus.
 <br>
 
 
@@ -313,7 +313,7 @@ Note:
 
 <br>
 
-### Two-legs limit price trade for a single execution path
+### Two-legged limit price trade for a single execution path
 
 ```
 cowsol -s orders/instance_2.json 
@@ -436,7 +436,7 @@ And this solution:
 <br>
 
 
-### Two-legs limit price trade for multiple execution paths
+### Two-legged limit price trade for multiple execution paths
 
 
 
@@ -640,7 +640,7 @@ Note: the derivation for the optimization equation for this strategy can be seen
 
 
 * Add support for more than two legs.
-* Add support for more than two pools on two-legs trade.
+* Add support for more than two pools on two-legged trade.
 * Add multiple path graph weighting and cyclic arbitrage detection using the Bellman-Ford algorithm, so that we can optimize by multiple paths without necessarily dividing the order through them. This would allow obtaining arbitrage profit through finding profitable negative cycles (*e.g.*, `A -> B -> C -> D -> A`).
 
 
