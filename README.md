@@ -71,6 +71,10 @@ This limit determines when an order can be executed:
 limit_price = sell_amount / buy_amount >= executed_buy_amount / executed_sell_amount
 ```
 
+> a good rule of thumb is that the [price impact](https://www.paradigm.xyz/2021/04/understanding-automated-market-makers-part-1-price-impact) of your order is about twice the size of your order relative to the pool.
+
+<br>
+
 ### Surplus
 
 For multiple execution paths (liquidity sources), we choose the best solution by maximizing the *surplus* of an order:
