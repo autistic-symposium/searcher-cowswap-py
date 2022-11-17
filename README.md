@@ -259,8 +259,8 @@ Generates this output (logging set to `DEBUG`):
 🐮 ➕ buy 900_000000000000000000 of C, amm reserve: 10000_000000000000000000
 🟨   Prior sell reserve: 10000_000000000000000000
 🟨   Prior buy reserve: 10000_000000000000000000
-🟨   Prior sell price 1.0
-🟨   Prior buy price 1.0
+🟨   Spot sell price 1.0
+🟨   Spot buy price 1.0
 🟨   AMM exec sell amount: 1000_000000000000000000
 🟨   AMM exec buy amount: 909_090909090909090909
 🟨   Updated sell reserve: 11000_000000000000000000
@@ -368,8 +368,8 @@ Generates this (`DEBUG`) output:
 🐮 ➕ buy some amount of B2
 🟨   Prior sell reserve: 10000_000000000000000000
 🟨   Prior buy reserve: 20000_000000000000000000
-🟨   Prior sell price 0.5
-🟨   Prior buy price 2.0
+🟨   Spot sell price 0.5
+🟨   Spot buy price 2.0
 🟨   AMM exec sell amount: 1000_000000000000000000
 🟨   AMM exec buy amount: 1818_181818181818181818
 🟨   Updated sell reserve: 11000_000000000000000000
@@ -382,8 +382,8 @@ Generates this (`DEBUG`) output:
 🐮 ➕ buy some amount of C
 🟨   Prior sell reserve: 15000_000000000000000000
 🟨   Prior buy reserve: 10000_000000000000000000
-🟨   Prior sell price 1.5
-🟨   Prior buy price 0.6666666666666666
+🟨   Spot sell price 1.5
+🟨   Spot buy price 0.6666666666666666
 🟨   AMM exec sell amount: 1818_181818181818181818
 🟨   AMM exec buy amount: 1081_081081081081081081
 🟨   Updated sell reserve: 16818_181818181818181820
@@ -523,8 +523,8 @@ Generates this (`DEBUG`) output:
 🐮 ➕ buy some amount of B1
 🟨   Prior sell reserve: 10000_000000000000000000
 🟨   Prior buy reserve: 20000_000000000000000000
-🟨   Prior sell price 0.5
-🟨   Prior buy price 2.0
+🟨   Spot sell price 0.5
+🟨   Spot buy price 2.0
 🟨   AMM exec sell amount: 289_073705673240477696
 🟨   AMM exec buy amount: 561_904237334502880476
 🟨   Updated sell reserve: 10289_073705673240477700
@@ -537,8 +537,8 @@ Generates this (`DEBUG`) output:
 🐮 ➕ buy some amount of C
 🟨   Prior sell reserve: 23000_000000000000000000
 🟨   Prior buy reserve: 15000_000000000000000000
-🟨   Prior sell price 1.5333333333333334
-🟨   Prior buy price 0.6521739130434783
+🟨   Spot sell price 1.5333333333333334
+🟨   Spot buy price 0.6521739130434783
 🟨   AMM exec sell amount: 561_904237334502880476
 🟨   AMM exec buy amount: 357_719965038404924081
 🟨   Updated sell reserve: 23561_904237334502880480
@@ -551,8 +551,8 @@ Generates this (`DEBUG`) output:
 🐮 ➕ buy some amount of B3
 🟨   Prior sell reserve: 12000_000000000000000000
 🟨   Prior buy reserve: 12000_000000000000000000
-🟨   Prior sell price 1.0
-🟨   Prior buy price 1.0
+🟨   Spot sell price 1.0
+🟨   Spot buy price 1.0
 🟨   AMM exec sell amount: 710_926294326759522304
 🟨   AMM exec buy amount: 671_163952522389243203
 🟨   Updated sell reserve: 12710_926294326759522300
@@ -565,8 +565,8 @@ Generates this (`DEBUG`) output:
 🐮 ➕ buy some amount of C
 🟨   Prior sell reserve: 10000_000000000000000000
 🟨   Prior buy reserve: 15000_000000000000000000
-🟨   Prior sell price 0.6666666666666666
-🟨   Prior buy price 1.5
+🟨   Spot sell price 0.6666666666666666
+🟨   Spot buy price 1.5
 🟨   AMM exec sell amount: 671_163952522389243203
 🟨   AMM exec buy amount: 943_426540218806186671
 🟨   Updated sell reserve: 10671_163952522389243200
