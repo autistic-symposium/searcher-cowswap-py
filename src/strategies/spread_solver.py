@@ -96,8 +96,8 @@ class SpreadSolverApi():
 
         log_debug(f"  Prior sell reserve: {to_solution(solution['prior_sell_token_reserve'])}")
         log_debug(f"  Prior buy reserve: {to_solution(solution['prior_buy_token_reserve'])}")
-        log_debug(f"  Prior sell price {solution['prior_sell_price']}")
-        log_debug(f"  Prior buy price {solution['prior_buy_price']}")
+        log_debug(f"  Spot sell price {solution['prior_sell_price']}")
+        log_debug(f"  Spot buy price {solution['prior_buy_price']}")
         log_debug(f"  AMM exec sell amount: {to_solution(solution['amm_exec_sell_amount'])}")
         log_debug(f"  AMM exec buy amount: {to_solution(solution['amm_exec_buy_amount'])}")
         log_debug(f"  Updated sell reserve: {to_solution(solution['updated_sell_token_reserve'])}")
