@@ -678,3 +678,4 @@ Note: the derivation for the optimization equation for this strategy can be seen
 * [cow.fi](http://cow.fi/)
 * [Solver specs](https://docs.cow.fi/off-chain-services/in-depth-solver-specification)
 * [CoW protocol support to ERC-1271](https://twitter.com/cowswap/status/1587895229666893824?s=12&t=y-P8Uf4eebJHrHCmZMk7jA&utm_source=substack&utm_medium=email)
+* [Useful CowSwap resources](https://hackmd.io/@chenm/HJqjdkjvt)
