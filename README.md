@@ -2,6 +2,13 @@
 
 <br>
 
+<p align="center">
+<img src="https://user-images.githubusercontent.com/1130416/210285000-e2c30198-c671-4bef-927d-7a2ab5bf9ced.png" width="50%" align="center" style="padding:1px;border:1px solid black;"/>
+ </p>
+
+
+<br>
+
 **This program implements a solver running arbitrage strategies for [CoW Protocol](https://github.com/cowprotocol).**
 
 <br>
@@ -638,7 +645,7 @@ Note: the derivation for the optimization equation for this strategy can be seen
 
 ----
 
-## Features to be added
+## Features to be added some day
 
 ### Strategies
 
