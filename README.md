@@ -10,7 +10,7 @@
 
 <br>
 
-For more details about this solver, check my Mirror post, [🐮✨bot #1: cowsol, an arb solver for CoW protocol](https://mirror.xyz/steinkirch.eth/s_RwnRgJvK_6fLYPyav7lFT3Zs4W4ZvYwp-AM9EbuhQ).
+For more details about this solver, check my Mirror post, **[🐮✨bot #1: cowsol, an arb solver for CoW protocol](https://mirror.xyz/steinkirch.eth/s_RwnRgJvK_6fLYPyav7lFT3Zs4W4ZvYwp-AM9EbuhQ)**.
 
 
 <br>
