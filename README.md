@@ -2,35 +2,42 @@
 
 <br>
 
+
 <p align="center">
 <img src="https://user-images.githubusercontent.com/1130416/210285000-e2c30198-c671-4bef-927d-7a2ab5bf9ced.png" width="50%" align="center" style="padding:1px;border:1px solid black;"/>
  </p>
 
-
 <br>
 
-**This program implements a solver running arbitrage strategies for [CoW Protocol](https://github.com/cowprotocol).**
-
-<br>
 
 > *[Solvers](https://docs.cow.fi/off-chain-services/solvers) are a key component in the Cow Protocol, serving as the matching engines that find the best execution paths for user orders*.
 
 <br>
 
-For more details about this solver, check my Mirror post, **[🐮✨bot #1: cowsol, an arb solver for CoW protocol](https://mirror.xyz/steinkirch.eth/s_RwnRgJvK_6fLYPyav7lFT3Zs4W4ZvYwp-AM9EbuhQ)**.
 
+### tl; dr
+
+
+#### 🐮 this program implements a solver running arbitrage strategies for [CoW Protocol](https://github.com/cowprotocol).
+
+#### 📚 more details about this solver, check my Mirror post, **[🐮✨bot #1: cowsol, an arb solver for CoW protocol](https://mirror.xyz/steinkirch.eth/s_RwnRgJvK_6fLYPyav7lFT3Zs4W4ZvYwp-AM9EbuhQ)**.
+
+#### 🚨 disclaimer: this project is a boilerplate to get you started; you might or might not profit from it: in the mev world, nobody is going to handle you the alpha. i am not responsible for anything you do with my free code.
 
 <br>
+
+
+
 
 ---
 
 ## Current Strategies
 
-
+<br>
 
 ### "no market maker" spread arbitrage
 
-> Spread trades are the act of purchasing one security and selling another related security (legs) as a unit. 
+> *Spread trades are the act of purchasing one security and selling another related security (legs) as a unit.*
 
 <br>
 
@@ -47,6 +54,7 @@ For more details about this solver, check my Mirror post, **[🐮✨bot #1: cows
 
 ## Implemented features 
 
+<br>
 
 ### Liquidity sources
 
@@ -69,8 +77,9 @@ For more details about this solver, check my Mirror post, **[🐮✨bot #1: cows
 
 ## Execution specs
 
+<br>
 
-> A limit order is an order to buy or sell with a restriction on the maximum price to be paid or the minimum price to be received (the "limit price").
+> *A limit order is an order to buy or sell with a restriction on the maximum price to be paid or the minimum price to be received (the "limit price").*
 
 This limit determines when an order can be executed:
 
@@ -78,7 +87,7 @@ This limit determines when an order can be executed:
 limit_price = sell_amount / buy_amount >= executed_buy_amount / executed_sell_amount
 ```
 
-> a good rule of thumb is that the [price impact](https://www.paradigm.xyz/2021/04/understanding-automated-market-makers-part-1-price-impact) of your order is about twice the size of your order relative to the pool.
+> *a good rule of thumb is that the [price impact](https://www.paradigm.xyz/2021/04/understanding-automated-market-makers-part-1-price-impact) of your order is about twice the size of your order relative to the pool.*
 
 <br>
 
@@ -99,6 +108,8 @@ All amounts are expressed by non-negative integer numbers, represented in atoms 
 ---
 
 ## Order specs
+
+<br>
 
 User orders describe a trading intent.
 
@@ -134,6 +145,8 @@ User orders describe a trading intent.
 ---
 
 ## Installing
+
+<br>
 
 ### Install Requirements
 
@@ -174,6 +187,8 @@ cowsol
 ---
 
 ## Usage
+
+<br>
 
 ### Listing available pools in an order instance file
 
@@ -647,6 +662,8 @@ Note: the derivation for the optimization equation for this strategy can be seen
 
 ## Features to be added some day
 
+<br>
+
 ### Strategies
 
 
@@ -681,6 +698,8 @@ Note: the derivation for the optimization equation for this strategy can be seen
 ---
 
 ## Resources
+
+<br>
 
 * [cow.fi](http://cow.fi/)
 * [Solver specs](https://docs.cow.fi/off-chain-services/in-depth-solver-specification)
