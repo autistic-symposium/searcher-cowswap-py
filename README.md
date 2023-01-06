@@ -1,4 +1,4 @@
-# ✨🐮 COWSOL: CoW Arbitrage Solver 👾✨ 
+# ✨🐮 COWSOL: CoW arbitrage solver 👾✨ 
 
 <br>
 
@@ -10,7 +10,7 @@
 <br>
 
 
-> *[Solvers](https://docs.cow.fi/off-chain-services/solvers) are a key component in the Cow Protocol, serving as the matching engines that find the best execution paths for user orders*.
+> *[solvers](https://docs.cow.fi/off-chain-services/solvers) are a key component in the Cow Protocol, serving as the matching engines that find the best execution paths for user orders*.
 
 <br>
 
@@ -31,7 +31,7 @@
 
 ---
 
-## Current Strategies
+## current strategies
 
 <br>
 
@@ -52,16 +52,16 @@
 
 ---
 
-## Implemented features 
+## implemented features 
 
 <br>
 
-### Liquidity sources
+### liquidity sources
 
 * Support for constant-product AMMs, such as Uniswap v2 (and its forks), where pools are represented by two token balances.
 
 
-### Orders types
+### orders types
 
 
 * Support for limit price orders for single order instances.
@@ -75,7 +75,7 @@
 ---
 
 
-## Execution specs
+## execution specs
 
 <br>
 
@@ -91,7 +91,7 @@ limit_price = sell_amount / buy_amount >= executed_buy_amount / executed_sell_am
 
 <br>
 
-### Surplus
+### surplus
 
 For multiple execution paths (liquidity sources), we choose the best solution by maximizing the *surplus* of an order:
 
@@ -99,7 +99,7 @@ For multiple execution paths (liquidity sources), we choose the best solution by
 surplus = exec_buy_amount  - exec_sell_amount / limit_price
 ```
 
-### Amounts representation
+### amounts representation
 
 All amounts are expressed by non-negative integer numbers, represented in atoms (*i.e.*, multiples of $10^{18}$). We add an underline (`_`) to results to denote decimal position, allowing easier reading.
 
@@ -107,7 +107,7 @@ All amounts are expressed by non-negative integer numbers, represented in atoms 
 
 ---
 
-## Order specs
+## order specs
 
 <br>
 
@@ -144,7 +144,7 @@ User orders describe a trading intent.
 
 ---
 
-## Installing
+## installing
 
 <br>
 
@@ -159,7 +159,7 @@ make install_deps
 
 <br>
 
-### Create an `.env`
+### create an `.env`
 
 
 ```sh
@@ -186,7 +186,7 @@ cowsol
 
 ---
 
-## Usage
+## usage
 
 <br>
 
@@ -210,7 +210,7 @@ Example output:
 
 <br>
 
-### Listing orders in an order instance file
+### listing orders in an order instance file
 
 ```
 cowsol -o <order file>
@@ -235,7 +235,7 @@ Example output:
 <br>
 
 
-### Solving a trade for one-leg limit price
+### solving a trade for one-leg limit price
 
 ```
 cowsol -s orders/instance_1.json 
@@ -339,7 +339,7 @@ Note:
 
 <br>
 
-### Two-legged limit price trade for a single execution path
+### two-legged limit price trade for a single execution path
 
 ```
 cowsol -s orders/instance_2.json 
@@ -462,7 +462,7 @@ And this solution:
 <br>
 
 
-### Two-legged limit price trade for multiple execution paths
+### two-legged limit price trade for multiple execution paths
 
 
 
@@ -660,11 +660,11 @@ Note: the derivation for the optimization equation for this strategy can be seen
 
 ----
 
-## Features to be added some day
+## features to be added some day
 
 <br>
 
-### Strategies
+### strategies
 
 
 * Add support for more than two legs.
@@ -674,7 +674,7 @@ Note: the derivation for the optimization equation for this strategy can be seen
 
 <br>
 
-### Liquidity sources
+### liquidity sources
 
 * Add support for Balancer's weighted pools.
 * Add support for Uniswap v3 and forks.
@@ -682,7 +682,7 @@ Note: the derivation for the optimization equation for this strategy can be seen
 
 <br>
 
-### Code improvement
+### code improvement
 
 * Implement support for AMM fees.
 * Add support for concurrency (`async`), so tasks could run in parallel adding temporal advantage to the solver.
@@ -697,11 +697,11 @@ Note: the derivation for the optimization equation for this strategy can be seen
 
 ---
 
-## Resources
+## resources
 
 <br>
 
 * [cow.fi](http://cow.fi/)
-* [Solver specs](https://docs.cow.fi/off-chain-services/in-depth-solver-specification)
-* [CoW protocol support to ERC-1271](https://twitter.com/cowswap/status/1587895229666893824?s=12&t=y-P8Uf4eebJHrHCmZMk7jA&utm_source=substack&utm_medium=email)
-* [Useful CowSwap resources](https://hackmd.io/@chenm/HJqjdkjvt)
+* [solver specs](https://docs.cow.fi/off-chain-services/in-depth-solver-specification)
+* [cow protocol support to ERC-1271](https://twitter.com/cowswap/status/1587895229666893824?s=12&t=y-P8Uf4eebJHrHCmZMk7jA&utm_source=substack&utm_medium=email)
+* [useful CowSwap resources](https://hackmd.io/@chenm/HJqjdkjvt)
