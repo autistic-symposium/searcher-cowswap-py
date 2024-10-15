@@ -14,9 +14,10 @@ def to_decimal_str(value) -> str:
     return str(to_decimal(value))
 
 
-def to_wei_str(value, decimals = 18) -> str:
+def to_wei_str(value, decimals=None) -> str:
     """Parse an order string to wei value."""
 
+    decimals = decimals or 18
     try:
         return str(value)[:-decimals] + '_' + str(value)[-decimals:]
     except ValueError as e:
@@ -29,10 +30,11 @@ def to_solution(value) -> str:
     return to_wei_str(to_decimal_str(value))
 
 
-def pprint(data) -> None:
+def pprint(data, indent=None) -> None:
     """Print dicts and data in a suitable format"""
 
-    pp = PrettyPrinter(indent=4)
     print()
+    indent = indent or 4
+    pp = PrettyPrinter(indent=indent)
     pp.pprint(data)
     print()

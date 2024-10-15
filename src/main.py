@@ -28,9 +28,9 @@ def run_menu() -> argparse.ArgumentParser:
 def run() -> None:
     """Entry point for this module."""
 
-    env_vars = load_config()
     parser = run_menu()
     args = parser.parse_args()
+    env_vars = load_config()
 
     if args.amms:
 
@@ -51,7 +51,7 @@ def run() -> None:
     elif args.spread:
 
         input_file = args.spread[0]
-        log_info(f'Solving {input_file} with spread strategy.')
+        log_info(f'Solving {input_file}.')
 
         # Create an instance for the entire instance input file.
         oa = OrdersApi(input_file)

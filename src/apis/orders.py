@@ -5,7 +5,8 @@
 from src.util.strings import to_decimal_str, pprint
 from src.util.os import open_json, log_error, exit_with_error
 
-class OrdersApi(object):
+
+class OrdersApi():
 
     def __init__(self, input_file):
 
@@ -26,16 +27,16 @@ class OrdersApi(object):
         return self.__orders
 
     @property
-    def orders_data(self) -> dict:
+    def orders_data(self) -> None:
         """Pretty print full orders data."""
 
-        return pprint(self.__orders)
+        pprint(self.__orders)
 
     @property
-    def amms_data(self) -> dict:
+    def amms_data(self) -> None:
         """Pretty print full amms data."""
 
-        return pprint(self.__amms)
+        pprint(self.__amms)
 
     ###############################
     #     Private methods         #
@@ -51,7 +52,7 @@ class OrdersApi(object):
             self.__amms = order_instance['amms']
 
         except KeyError as e:
-            log_error(f'Could not load order instance(no amms or orders key): {e}')
+            exit_with_error(f'Could not load orders (no amms or orders key): {e}')
 
     ###############################
     #     Static methods          #
@@ -65,16 +66,15 @@ class OrdersApi(object):
             return {
                     'allow_partial_fill': order['allow_partial_fill'],
                     'is_sell_order': order['is_sell_order'],
-                    'buy_amount': to_decimal_str(order['buy_amount']),
-                    'sell_amount': to_decimal_str(order['sell_amount']),
+                    'buy_amount': int(to_decimal_str(order['buy_amount'])),
+                    'sell_amount': int(to_decimal_str(order['sell_amount'])),
                     'buy_token': order['buy_token'],
                     'sell_token': order['sell_token'],
                     'order_num': order_num
                 }
 
         except KeyError as e:
-            log_error(f'Input order data is ill-formatted: {e}')
-            exit_with_error()
+            exit_with_error(f'Input order data is ill-formatted: {e}')
 
     ###############################
     #     Public methods          #
@@ -88,12 +88,10 @@ class OrdersApi(object):
             buy_token = order['buy_token']
             sell_token = order['sell_token']
         except KeyError as e:
-            log_error(f'Order has no data for buy/sell token: {e}')
-            return
+            exit_with_error(f'Order has no data for buy/sell token: {e}')
 
         if buy_token == 0 or sell_token == 0:
-            log_error('Order invalid: either sell or buy token is zero.')
-            return
+            exit_with_error('Order invalid: either sell or buy token is zero.')
 
         # Parse amms in terms of number of trading legs and pools.
         trade_path = sell_token + buy_token
@@ -126,7 +124,7 @@ class OrdersApi(object):
                     if len(pool) == 3:
                         trade_type = 'two_legs_trade'
 
-                        if trade_type not in this_amms.keys():
+                        if trade_type not in this_amms:
                             this_amms[trade_type] = {}
 
                         # First leg
@@ -161,7 +159,7 @@ class OrdersApi(object):
                             log_error(f'Could not extract order data for {pool}.')
 
                     else:
-                        log_error('COWSOL has no strategy for 3-legs trade or higher (yet)')
+                        log_error('3-legs trade or higher are not available: {e}')
 
             except KeyError as e:
                 log_error(f'Input data is ill-formatted: {e}')
